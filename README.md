@@ -16,6 +16,7 @@ This library is **FrankenPHP worker mode friendly**: `RedirectForm` returns an H
 
 - [Installation](docs/INSTALLATION.md)
 - [Configuration](docs/CONFIGURATION.md)
+- [Sandbox: credenciales y tarjetas de prueba](docs/SANDBOX.md)
 - [PSR evaluation (REQ-CS-007)](docs/PSR.md)
 - [Usage](docs/USAGE.md)
 - [Contributing](docs/CONTRIBUTING.md)
@@ -102,4 +103,6 @@ make setup-hooks
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+**MIT** — see [LICENSE](LICENSE).
+
+Independent clean-room implementation of the public Redsys TPV Virtual protocol. Does not redistribute Redsys proprietary PHPL_* source. “Redsys” is a trademark of its respective owners.
