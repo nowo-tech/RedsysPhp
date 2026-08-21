@@ -29,6 +29,7 @@ This library is **FrankenPHP worker mode friendly**: `RedirectForm` returns an H
 - [Coverage](docs/COVERAGE.md)
 - [GitHub CI](docs/GITHUB_CI.md)
 - [Branching](docs/BRANCHING.md)
+- [FrankenPHP demo](docs/DEMO-FRANKENPHP.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## Quick start

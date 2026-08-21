@@ -36,3 +36,7 @@ var/
 
 # Cursor local sandbox (machine-specific; REQ-IDE-005)
 .cursor/sandbox.json
+
+demo/symfony8/vendor/
+demo/symfony8/var/
+demo/symfony8/.env

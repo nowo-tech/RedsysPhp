@@ -60,6 +60,6 @@ final class ProtocolExtrasTest extends TestCase
 
     public function testVersionConstant(): void
     {
-        self::assertSame('1.0.0', Version::VERSION);
+        self::assertSame('1.0.1', Version::VERSION);
     }
 }

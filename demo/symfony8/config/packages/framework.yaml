@@ -1,0 +1,15 @@
+framework:
+    secret: '%env(APP_SECRET)%'
+    http_method_override: false
+    session: true
+    php_errors:
+        log: true
+
+# Enable profiler in dev so the Web Profiler toolbar can collect and display data.
+when@dev:
+    framework:
+        profiler: { only_exceptions: false }
+        router:
+            http_port: '%env(int:PORT)%'
+        trusted_proxies: 'private_ranges'
+        trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port', 'x-forwarded-prefix']

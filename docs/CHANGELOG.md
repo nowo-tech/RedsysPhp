@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-08-21
+
+### Added
+
+- Symfony 8 + FrankenPHP demo (`demo/symfony8`) with redirect / notify / OK / KO flows
+- `docs/DEMO-FRANKENPHP.md`
+
 ## [1.0.0] - 2026-08-21
 
 ### Added

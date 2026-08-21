@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+  <main style="max-width:40rem;margin:2rem auto;font-family:system-ui,sans-serif">
+    <h1>{{ title }}</h1>
+    <p>Browser return from Redsys ({{ tone }}). Always verify the online notification signature on <code>/notify</code> before fulfilling orders.</p>
+    <p><a href="{{ path('home') }}">Back</a></p>
+  </main>
+{% endblock %}

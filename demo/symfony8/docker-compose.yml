@@ -1,0 +1,42 @@
+name: redsys-php-demo-symfony8
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: redsys-php-demo-symfony8-php
+    working_dir: /app
+    ports:
+      - "${PORT:-8020}:80"
+    volumes:
+      - .:/app
+      - ../..:/var/redsys-php
+      - ./docker/frankenphp/Caddyfile.dev:/etc/frankenphp/Caddyfile.dev
+      - ./docker/php-dev.ini:/usr/local/etc/php/conf.d/99-dev.ini:ro
+      - composer-cache:/root/.composer/cache
+    environment:
+      - COMPOSER_ALLOW_SUPERUSER=1
+      - APP_ENV=dev
+      - APP_DEBUG=1
+      - APP_SECRET=${APP_SECRET:-demo-secret}
+      - FRANKENPHP_MODE=${FRANKENPHP_MODE:-worker}
+      - PORT=${PORT:-8020}
+      - REDSYS_MERCHANT_CODE=${REDSYS_MERCHANT_CODE:-999008881}
+      - REDSYS_TERMINAL=${REDSYS_TERMINAL:-1}
+      - REDSYS_SECRET_KEY=${REDSYS_SECRET_KEY:-sq7HjrUOBfKmC576ILgskD5srU870gJ7}
+      - REDSYS_ENV=${REDSYS_ENV:-test}
+      - DEFAULT_URI=${DEFAULT_URI:-http://localhost:8020}
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    networks:
+      - redsys-php-demo-network
+
+volumes:
+  composer-cache:
+    driver: local
+
+networks:
+  redsys-php-demo-network:
+    driver: bridge

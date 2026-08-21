@@ -1,0 +1,15 @@
+nowo_qr_code:
+    use_database_config: false
+    default_profile: default
+    profiles:
+        default:
+            size: 300
+            margin: 10
+            error_correction: high
+            url_allowlist: []
+        compact:
+            size: 128
+            margin: 2
+            error_correction: medium
+            url_allowlist:
+                - example.com

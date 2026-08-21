@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}RedsysPhp demo{% endblock %}
+
+{% block body %}
+  <main style="max-width:40rem;margin:2rem auto;font-family:system-ui,sans-serif">
+    <h1>RedsysPhp — redirect demo</h1>
+    <p>Builds a signed auto-submit form to the Redsys SIS (test by default). FrankenPHP worker-safe: HTML is returned as a Response string.</p>
+    <form method="post" action="{{ path('pay') }}">
+      <p>
+        <label>Amount (cents)<br>
+          <input name="amount" value="145" required>
+        </label>
+      </p>
+      <p>
+        <label>Order (4–12 chars)<br>
+          <input name="order" value="{{ defaultOrder }}" required maxlength="12">
+        </label>
+      </p>
+      <button type="submit">Pay with Redsys</button>
+    </form>
+  </main>
+{% endblock %}
