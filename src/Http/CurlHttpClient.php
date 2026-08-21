@@ -44,15 +44,12 @@ final class CurlHttpClient implements HttpClient
         $raw = curl_exec($ch);
         // @codeCoverageIgnoreStart
         if (!\is_string($raw)) {
-            $error = curl_error($ch);
-            curl_close($ch);
-            throw new RedsysException('Redsys HTTP request failed: '.$error);
+            throw new RedsysException('Redsys HTTP request failed: '.curl_error($ch));
         }
         // @codeCoverageIgnoreEnd
 
         $status = (int) curl_getinfo($ch, \CURLINFO_RESPONSE_CODE);
         $headerSize = (int) curl_getinfo($ch, \CURLINFO_HEADER_SIZE);
-        curl_close($ch);
 
         $headerBlob = substr($raw, 0, $headerSize);
         $body = substr($raw, $headerSize);
