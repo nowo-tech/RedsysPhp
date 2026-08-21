@@ -51,7 +51,13 @@ jobs:
 
           if [ -f "$CHANGELOG_FILE" ]; then
             VERSION_ESCAPED=$(echo "$VERSION" | sed 's/\./\\./g')
-            CHANGELOG_ENTRY=$(awk "/^## \[$VERSION_ESCAPED\]/ {flag=1; next} /^## \[?[0-9]/ {flag=0} flag" "$CHANGELOG_FILE" 2>/dev/null || echo "")
+            # Keep a Changelog: ## [1.0.0] - YYYY-MM-DD (also tolerates em dash / bare heading)
+            CHANGELOG_ENTRY=$(awk -v ver="$VERSION" '
+              BEGIN { re = "^## \\[?" ver "\\]?( - | — |$)" }
+              $0 ~ re { flag = 1; next }
+              /^## / { flag = 0 }
+              flag
+            ' "$CHANGELOG_FILE" 2>/dev/null || echo "")
 
             if [ -n "$CHANGELOG_ENTRY" ]; then
               echo "HAS_CHANGELOG=true" >> $GITHUB_OUTPUT
@@ -71,7 +77,7 @@ jobs:
 
       - name: Check if release exists and update if needed
         id: check-existing
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           TAG_NAME: ${{ steps.tag.outputs.TAG_NAME }}
         with:
@@ -106,7 +112,7 @@ jobs:
 
       - name: Update existing release
         if: steps.check-existing.outputs.exists == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           TAG_NAME: ${{ steps.tag.outputs.TAG_NAME }}
           TAG_MESSAGE: ${{ steps.tag_message.outputs.MESSAGE }}
@@ -147,7 +153,7 @@ jobs:
 
       - name: Create Release
         if: steps.check-existing.outputs.exists != 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           TAG_NAME: ${{ steps.tag.outputs.TAG_NAME }}
           TAG_MESSAGE: ${{ steps.tag_message.outputs.MESSAGE }}

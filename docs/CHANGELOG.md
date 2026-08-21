@@ -1,9 +1,17 @@
 # Changelog
 
-## 1.0.0 — 2026-08-21
+All notable changes to this project are documented in this file.
 
-Initial public release of the **Nowo clean-room** Redsys TPV SDK.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [1.0.0] - 2026-08-21
+
+### Added
+
+- Initial public release of the **Nowo clean-room** Redsys TPV SDK.
 - Namespace `Nowo\Redsys\`
 - License **MIT** (independent protocol implementation; not PHPL_*)
 - `Signature\Signer`: `HMAC_SHA512_V2` (default), `HMAC_SHA512_V1`, `HMAC_SHA256_V1`
@@ -11,3 +19,7 @@ Initial public release of the **Nowo clean-room** Redsys TPV SDK.
 - `RedirectForm` (FrankenPHP-safe), `Notification`, `RestClient` + cURL timeouts
 - PHPStan level 8 + FrankenPHP rulesets
 - Spec Kit baseline + Nowo bundle scaffold
+
+### Changed
+
+- GitHub Actions: `actions/checkout@v7`, `actions/github-script@v9`, `actions/stale@v11`
