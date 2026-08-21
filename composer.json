@@ -1,0 +1,92 @@
+{
+    "name": "nowo-tech/redsys-php",
+    "description": "Clean-room PHP SDK for the public Redsys TPV Virtual protocol (HMAC signing, redirect, REST). PHP 8.3+ and FrankenPHP worker-safe.",
+    "type": "library",
+    "keywords": [
+        "redsys",
+        "tpv",
+        "payments",
+        "spain",
+        "bizum",
+        "php",
+        "sdk",
+        "frankenphp",
+        "nowo"
+    ],
+    "homepage": "https://github.com/nowo-tech/RedsysPhp",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "H\u00e9ctor Franco Aceituno",
+            "email": "hectorfranco@nowo.tech",
+            "homepage": "https://github.com/HecFranco",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Nowo.tech",
+            "homepage": "https://nowo.tech"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/nowo-tech/RedsysPhp/issues",
+        "source": "https://github.com/nowo-tech/RedsysPhp",
+        "docs": "https://github.com/nowo-tech/RedsysPhp/blob/main/docs/USAGE.md"
+    },
+    "require": {
+        "php": ">=8.3",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-openssl": "*"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "nowo-tech/phpstan-frankenphp": "^1.1",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5",
+        "rector/rector": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nowo\\Redsys\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Nowo\\Redsys\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-text --coverage-clover=coverage.xml --coverage-html=coverage",
+        "cs-check": "php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "php-cs-fixer fix",
+        "rector": "rector process",
+        "rector-dry": "rector process --dry-run",
+        "phpstan": "phpstan analyse --memory-limit=1G",
+        "qa": [
+            "@cs-check",
+            "@phpstan",
+            "@test"
+        ]
+    },
+    "archive": {
+        "exclude": [
+            "/demo",
+            "/.cursor"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "nowo-package-version": "1.0.0",
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

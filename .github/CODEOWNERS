@@ -1,0 +1,7 @@
+# Code Owners for RedsysPhp (Nowo clean-room SDK)
+
+* @HecFranco
+
+/.github/ @HecFranco
+/src/ @HecFranco
+/tests/ @HecFranco
