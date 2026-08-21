@@ -1,34 +1,16 @@
-# Openpay PHP SDK Constitution
+# Constitution — Nowo RedsysPhp
 
-## Core Principles
+## Purpose
 
-### I. Drop-in Openpay contract
-Public namespaces stay `Openpay\\`. Composer `replace`s `openpay/sdk` 3.1.1.
-Nowo additions (`configure` / `reset` / `OpenpaySession` / HTTP transport) must
-not break the upstream API used by merchant apps.
+Clean-room MIT SDK for the **public** Redsys TPV Virtual protocol. Namespace `Nowo\Redsys\`. No redistribution of proprietary PHPL_* sources.
 
-### II. Request isolation
-Merchant credentials are process statics. Callers on php-fpm and FrankenPHP
-workers MUST `reset()` (or use `OpenpaySession`) at the end of each request.
+## Non-negotiables
 
-### III. Spec-first, test-proven
-PHPUnit and PHPStan are the mechanical proof. Behavioral changes require tests.
-
-### IV. 100% code inventory traceability
-Every production file under `Openpay/` and root `Openpay.php` must appear in
-`specs/001-baseline/code-inventory.md`. New files require spec updates in the same PR.
-
-### V. Cursor + Spec Kit
-GitHub Spec Kit is initialized with **Cursor Agent**. Do not add Cursor
-co-author trailers (REQ-GIT-001).
-
-### VI. Scoped static analysis
-PHPStan and Rector MUST stay on the Nowo HTTP/session surface (plus Rector
-`tests/`). Do not require a full-tree Rector rewrite of upstream `Openpay/Resources`
-as a release gate.
-
-## Governance
-Amendments update this file, baseline spec when principles affect behavior, and
-`docs/CHANGELOG.md` when consumer-visible.
-
-**Version**: 1.1.0 | **Ratified**: 2026-08-21 | **Last Amended**: 2026-08-21
+1. Protocol algorithms and endpoints come from **public** Redsys documentation only.
+2. `RedirectForm` returns HTML strings — never `echo` / `exit` (FrankenPHP worker-safe).
+3. Always verify notification / REST signatures before fulfilling orders.
+4. cURL REST calls MUST set connect and total timeouts.
+5. PHPStan level 8 with empty `ignoreErrors`; FrankenPHP rulesets enabled.
+6. Lines coverage on `src/` ≥ 99% (target 100%).
+7. REQ-GIT-001: no Cursor co-author trailers in commits.
+8. SemVer from **1.0.0**; no Composer `replace` of proprietary packages.
