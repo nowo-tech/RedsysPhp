@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `docs/SANDBOX.md` — public Redsys test merchant credentials and sandbox test cards
 ## [1.0.1] - 2026-08-21
 
 ### Added

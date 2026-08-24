@@ -2,6 +2,8 @@
 
 Clean-room SDK. Namespace `Nowo\Redsys\`. Default signature: `HMAC_SHA512_V2`.
 
+Sandbox FUC / key / test cards: [SANDBOX.md](SANDBOX.md).
+
 ## Merchant
 
 ```php
@@ -9,11 +11,12 @@ use Nowo\Redsys\Environment;
 use Nowo\Redsys\Merchant;
 use Nowo\Redsys\SignatureVersion;
 
+// Public sandbox merchant — see SANDBOX.md. Use Environment::Live + bank credentials in production.
 $merchant = new Merchant(
     '999008881',
     '001',
-    getenv('REDSYS_SECRET_KEY') ?: '',
-    Environment::Live,
+    getenv('REDSYS_SECRET_KEY') ?: 'sq7HjrUOBfKmC576ILgskD5srU870gJ7',
+    Environment::Test,
     SignatureVersion::HmacSha512V2,
 );
 ```

@@ -29,3 +29,7 @@ After changing `.env`, run `docker compose up -d` (or `make up`) so the containe
 - Redirect payment via `Nowo\Redsys\RedirectForm`
 - Notify verification via `Nowo\Redsys\Notification`
 - OK/KO return pages
+
+## Sandbox credentials and test cards
+
+Defaults in `demo/symfony8/.env.example` use the public Redsys test merchant (`999008881`). Full table of credentials, PANs, CVV denial codes, and official links: [SANDBOX.md](SANDBOX.md).

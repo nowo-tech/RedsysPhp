@@ -4,6 +4,8 @@
 
 Provide FUC (`merchantCode`), terminal, and the **terminal signature key** from the Redsys admin portal. Prefer environment / secret store — never commit keys.
 
+For **sandbox** FUC, terminal, signature key, URLs, and **test cards**, see [SANDBOX.md](SANDBOX.md).
+
 | Setting | Class / API |
 |---------|-------------|
 | Environment | `Environment::Test` / `Environment::Live` |
