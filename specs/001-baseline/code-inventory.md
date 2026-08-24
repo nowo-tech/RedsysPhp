@@ -2,6 +2,8 @@
 
 Traceability for REQ-SPECKIT-003. All production units under `src/`.
 
+**Last audited:** 2026-08-24 (baseline aligned with `spec.md` user scenarios and FR-* requirements).
+
 ## Core
 
 | Unit | Path | Spec refs |
