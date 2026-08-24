@@ -7,9 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [1.0.2] - 2026-08-24
+
+### Changed
+
+- **Demos:** MySQL env policy in FrankenPHP stack (REQ-DEMO-011).
+- **Docs:** English sandbox credentials guide (`docs/SANDBOX.md`).
+- **CI:** git hooks and release hygiene (REQ-GIT-001).
+- **Docs:** Spec Kit baseline refresh.
+
+### Notes
+
+- **No API or configuration changes** for integrators unless noted above.
+
 ### Added
 
 - `docs/SANDBOX.md` — public Redsys test merchant credentials and sandbox test cards
+[1.0.2]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.0.2
+
+
 ## [1.0.1] - 2026-08-21
 
 ### Added
