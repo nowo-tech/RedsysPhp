@@ -9,8 +9,10 @@ use Nowo\Redsys\Exception\RedsysException;
 
 /**
  * DS_MERCHANT_* request map → Base64URL JSON for Ds_MerchantParameters.
+ *
+ * Immutable copy-on-write: every mutator returns a new instance (FrankenPHP worker-safe).
  */
-final class MerchantParameters implements \JsonSerializable
+final readonly class MerchantParameters implements \JsonSerializable
 {
     /** @param array<string, mixed> $fields */
     public function __construct(
@@ -25,10 +27,10 @@ final class MerchantParameters implements \JsonSerializable
 
     public function with(string $key, mixed $value): self
     {
-        $clone = clone $this;
-        $clone->fields[$key] = $value;
+        $fields = $this->fields;
+        $fields[$key] = $value;
 
-        return $clone;
+        return new self($fields);
     }
 
     public function amount(int|string $amount): self

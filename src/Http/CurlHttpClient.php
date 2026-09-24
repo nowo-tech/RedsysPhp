@@ -9,11 +9,11 @@ use Nowo\Redsys\Exception\RedsysException;
 /**
  * cURL JSON POST with connect/request timeouts (REQ-RUNTIME-001).
  */
-final class CurlHttpClient implements HttpClient
+final readonly class CurlHttpClient implements HttpClient
 {
     public function __construct(
-        private readonly int $connectTimeoutSeconds = 5,
-        private readonly int $timeoutSeconds = 30,
+        private int $connectTimeoutSeconds = 5,
+        private int $timeoutSeconds = 30,
     ) {
     }
 
@@ -48,17 +48,17 @@ final class CurlHttpClient implements HttpClient
         }
         // @codeCoverageIgnoreEnd
 
-        $status = (int) curl_getinfo($ch, \CURLINFO_RESPONSE_CODE);
-        $headerSize = (int) curl_getinfo($ch, \CURLINFO_HEADER_SIZE);
+        $status = curl_getinfo($ch, \CURLINFO_RESPONSE_CODE);
+        $headerSize = curl_getinfo($ch, \CURLINFO_HEADER_SIZE);
 
         $headerBlob = substr($raw, 0, $headerSize);
         $body = substr($raw, $headerSize);
 
-        return new HttpResponse($status, $body, self::parseHeaders($headerBlob));
+        return new HttpResponse($status, $body, $this->parseHeaders($headerBlob));
     }
 
     /** @return array<string, list<string>> */
-    private static function parseHeaders(string $headerBlob): array
+    private function parseHeaders(string $headerBlob): array
     {
         $headers = [];
         foreach (explode("\r\n", $headerBlob) as $line) {

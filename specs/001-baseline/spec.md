@@ -2,18 +2,18 @@
 
 **Feature Branch**: `001-baseline`  
 **Created**: 2026-08-21  
-**Updated**: 2026-08-21  
-**Status**: Shipped (`1.0.0`, tag `v1.0.0`)  
+**Updated**: 2026-09-24  
+**Status**: Shipped (`1.0.3`, tag `v1.0.3`)  
 **Input**: Clean-room Nowo Redsys TPV SDK (`nowo-tech/redsys-php`) covering 100% of production units under `src/`.
 
-**Related docs**: [`docs/SPEC-DRIVEN-DEVELOPMENT.md`](../../docs/SPEC-DRIVEN-DEVELOPMENT.md), [`docs/CONFIGURATION.md`](../../docs/CONFIGURATION.md), [`docs/USAGE.md`](../../docs/USAGE.md), [`docs/COVERAGE.md`](../../docs/COVERAGE.md), [`docs/UPGRADING.md`](../../docs/UPGRADING.md), [`docs/CHANGELOG.md`](../../docs/CHANGELOG.md)  
+**Related docs**: [`docs/SPEC-DRIVEN-DEVELOPMENT.md`](../../docs/SPEC-DRIVEN-DEVELOPMENT.md), [`docs/CONFIGURATION.md`](../../docs/CONFIGURATION.md), [`docs/USAGE.md`](../../docs/USAGE.md), [`docs/COVERAGE.md`](../../docs/COVERAGE.md), [`docs/UPGRADING.md`](../../docs/UPGRADING.md), [`docs/CHANGELOG.md`](../../docs/CHANGELOG.md), [`docs/FRANKENPHP-WORKER-AUDIT.md`](../../docs/FRANKENPHP-WORKER-AUDIT.md)  
 **Code inventory (traceability)**: [`code-inventory.md`](code-inventory.md)
 
 ---
 
 ## Summary
 
-Independent MIT SDK for the public Redsys TPV Virtual protocol: HMAC signing (`HMAC_SHA512_V2` default), redirect HTML form, online notification verification, and REST SIS (`inicia` / `trata`). Namespace `Nowo\Redsys\`. FrankenPHP-safe (no echo/exit). GitHub: `nowo-tech/RedsysPhp`.
+Independent MIT SDK for the public Redsys TPV Virtual protocol: HMAC signing (`HMAC_SHA512_V2` default), redirect HTML form, online notification verification, and REST SIS (`inicia` / `trata`). Namespace `Nowo\Redsys\`. FrankenPHP-safe under worker mode with kernel **not** reset between requests (scenario B). GitHub: `nowo-tech/RedsysPhp`.
 
 ## User Scenarios & Testing
 
@@ -59,6 +59,17 @@ As a maintainer, I run `make release-check` and GitHub Actions before tagging `v
 1. **Given** local changes, **When** `make release-check` runs, **Then** CS + PHPStan + coverage gate pass.
 2. **Given** a commit, **When** hooks run, **Then** Cursor co-author trailers are rejected (REQ-GIT-001).
 
+### US-005 — FrankenPHP worker, kernel not reset (Priority: P1)
+
+As an app on FrankenPHP worker mode (`reset_kernel` false / scenario B), I use shared `Merchant` / `RestClient` without cross-request credential or payment-parameter leakage.
+
+**Independent Test**: PHPStan worker-strict; audit in `docs/FRANKENPHP-WORKER-AUDIT.md`.
+
+**Acceptance Scenarios**:
+
+1. **Given** a shared `Merchant` with fixed deployment credentials, **When** consecutive requests run in the same worker, **Then** no per-request order data is retained on the service.
+2. **Given** notification input from the current Symfony `Request`, **When** `Notification::fromRequest()` runs, **Then** verification uses only that array (no `$_POST` / `$_GET` reads in `src/`).
+
 ## Functional Requirements
 
 - **FR-001**: Support `HMAC_SHA512_V2`, `HMAC_SHA512_V1`, `HMAC_SHA256_V1` per public docs.
@@ -68,10 +79,12 @@ As a maintainer, I run `make release-check` and GitHub Actions before tagging `v
 - **FR-005**: REST client posts signed JSON to inicia/trata URLs.
 - **FR-006**: cURL client enforces connect and total timeouts.
 - **FR-007**: No proprietary PHPL_* sources in the repository.
+- **FR-008**: Library `src/` stays free of mutable/static request state; PHPStan FrankenPHP classic + worker-strict pass (see `docs/FRANKENPHP-WORKER-AUDIT.md`).
 
 ## Success Criteria
 
 - **SC-001**: Official V2 vector green in CI.
-- **SC-002**: PHPStan level 8, zero ignoreErrors.
+- **SC-002**: PHPStan level 8, zero ignoreErrors; FrankenPHP worker-strict clean.
 - **SC-003**: Lines coverage ≥ 99% on `src/`.
 - **SC-004**: MIT license; Packagist-ready metadata.
+- **SC-005**: Worker audit verdict **Viable** for scenario B (kernel never reset).

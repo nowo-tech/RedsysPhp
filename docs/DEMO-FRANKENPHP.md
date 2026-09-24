@@ -13,7 +13,7 @@ make -C demo/symfony8 up
 # Open http://localhost:8020/  (PORT from demo/symfony8/.env.example)
 ```
 
-This library is **FrankenPHP worker mode friendly**. Demos default to `FRANKENPHP_MODE=worker`.
+This library is **FrankenPHP worker mode friendly**. Demos default to `FRANKENPHP_MODE=worker`. Full audit for worker with kernel **not** reset: [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
 
 ## Switching classic vs worker (`FRANKENPHP_MODE`)
 

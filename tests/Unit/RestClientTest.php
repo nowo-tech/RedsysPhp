@@ -46,7 +46,7 @@ final class RestClientTest extends TestCase
             'Ds_SignatureVersion' => SignatureVersion::HmacSha512V2->value,
         ], \JSON_THROW_ON_ERROR);
 
-        $http = new class($body) implements HttpClient {
+        $http = new readonly class($body) implements HttpClient {
             public function __construct(private string $body)
             {
             }

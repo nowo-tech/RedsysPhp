@@ -22,4 +22,4 @@ See [.github/SECURITY.md](../.github/SECURITY.md) for private disclosure.
 ## Threat notes
 
 - Signature bypass → financial fraud: always `hash_equals` via `Signer::verify`.
-- Key leak across workers: this SDK is instance-based (`Merchant` readonly); no process-wide static credentials.
+- Key leak across workers: this SDK is instance-based (`Merchant` is `final readonly class`); no process-wide static credentials. See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).

@@ -12,11 +12,11 @@ use Nowo\Redsys\SignedPayload;
 /**
  * REST SIS client: iniciaPeticionREST / trataPeticionREST.
  */
-final class RestClient
+final readonly class RestClient
 {
     public function __construct(
-        private readonly Merchant $merchant,
-        private readonly HttpClient $http,
+        private Merchant $merchant,
+        private HttpClient $http,
     ) {
     }
 

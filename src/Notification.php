@@ -9,18 +9,20 @@ use Nowo\Redsys\Exception\RedsysException;
 /**
  * Online notification / browser return payload verifier.
  */
-final class Notification
+final readonly class Notification
 {
     public function __construct(
-        private readonly string $encodedParameters,
-        private readonly string $signature,
-        private readonly SignatureVersion $signatureVersion,
-        private readonly MerchantParameters $decoded,
+        private string $encodedParameters,
+        private string $signature,
+        private SignatureVersion $signatureVersion,
+        private MerchantParameters $decoded,
     ) {
     }
 
     /**
-     * @param array<string, mixed> $input typically $_POST / $_GET from Redsys
+     * @param array<string, mixed> $input Redsys fields from the current request
+     *                                    (Symfony: `$request->request->all()` / `$request->query->all()`;
+     *                                    avoid `$_POST` / `$_GET` under FrankenPHP worker mode)
      */
     public static function fromRequest(array $input, Merchant $merchant): self
     {

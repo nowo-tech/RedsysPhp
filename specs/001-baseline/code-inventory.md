@@ -1,18 +1,18 @@
-# Code inventory — RedsysPhp 1.0.0
+# Code inventory — RedsysPhp 1.0.3
 
 Traceability for REQ-SPECKIT-003. All production units under `src/`.
 
-**Last audited:** 2026-08-24 (baseline aligned with `spec.md` user scenarios and FR-* requirements).
+**Last audited:** 2026-09-24 (FrankenPHP worker scenario B; aligned with `spec.md` US-005 / FR-008).
 
 ## Core
 
 | Unit | Path | Spec refs |
 |------|------|-----------|
-| Merchant | `src/Merchant.php` | US-001 |
-| MerchantParameters | `src/MerchantParameters.php` | US-001, FR-002 |
+| Merchant | `src/Merchant.php` | US-001, US-005, FR-008 |
+| MerchantParameters | `src/MerchantParameters.php` | US-001, FR-002, FR-008 |
 | SignedPayload | `src/SignedPayload.php` | US-001, FR-001 |
 | RedirectForm | `src/RedirectForm.php` | US-001, FR-003 |
-| Notification | `src/Notification.php` | US-002, FR-004 |
+| Notification | `src/Notification.php` | US-002, US-005, FR-004, FR-008 |
 | Version | `src/Version.php` | SC-004 |
 | Environment | `src/Environment.php` | FR-005 |
 | SignatureVersion | `src/SignatureVersion.php` | FR-001 |
@@ -33,8 +33,8 @@ Traceability for REQ-SPECKIT-003. All production units under `src/`.
 |------|------|-----------|
 | HttpClient | `src/Http/HttpClient.php` | US-003 |
 | HttpResponse | `src/Http/HttpResponse.php` | US-003 |
-| CurlHttpClient | `src/Http/CurlHttpClient.php` | US-003, FR-006 |
-| RestClient | `src/Rest/RestClient.php` | US-003, FR-005 |
+| CurlHttpClient | `src/Http/CurlHttpClient.php` | US-003, FR-006, FR-008 |
+| RestClient | `src/Rest/RestClient.php` | US-003, FR-005, FR-008 |
 | RestResponse | `src/Rest/RestResponse.php` | US-003, FR-004 |
 
 **Total production PHP files**: 18
