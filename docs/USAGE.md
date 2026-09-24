@@ -27,7 +27,7 @@ Build `MerchantParameters`, then `RedirectForm::forMerchant()` → HTML string. 
 
 ## Notification
 
-`Notification::fromRequest($_POST, $merchant)` verifies the signature and exposes `isAuthorized()` (`Ds_Response` in `0000`–`0099`).
+`Notification::fromRequest($request->request->all(), $merchant)` (or query fields on browser return) verifies the signature and exposes `isAuthorized()` (`Ds_Response` in `0000`–`0099`). Prefer the Symfony `Request` over `$_POST` / `$_GET` under FrankenPHP worker mode. See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
 
 ## REST SIS
 

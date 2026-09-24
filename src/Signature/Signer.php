@@ -15,11 +15,11 @@ use Nowo\Redsys\SignatureVersion;
  * - https://pagosonline.redsys.es/…/firmar-una-operacion/ (HMAC_SHA512_V2)
  * - Redsys “Guía de migración a firma HMAC SHA256” (HMAC_SHA256_V1)
  */
-final class Signer
+final readonly class Signer
 {
     public function __construct(
-        private readonly string $merchantKey,
-        private readonly SignatureVersion $version = SignatureVersion::HmacSha512V2,
+        private string $merchantKey,
+        private SignatureVersion $version = SignatureVersion::HmacSha512V2,
     ) {
         if ('' === $this->merchantKey) {
             throw new RedsysException('Merchant signature key must not be empty.');

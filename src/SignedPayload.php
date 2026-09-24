@@ -7,12 +7,12 @@ namespace Nowo\Redsys;
 /**
  * Signed trio sent to Redsys (redirect form or REST body).
  */
-final class SignedPayload
+final readonly class SignedPayload
 {
     public function __construct(
-        public readonly string $merchantParameters,
-        public readonly string $signature,
-        public readonly SignatureVersion $signatureVersion,
+        public string $merchantParameters,
+        public string $signature,
+        public SignatureVersion $signatureVersion,
     ) {
     }
 

@@ -13,6 +13,6 @@
 ## Tagging
 
 ```sh
-git tag -a v1.0.1 -m "RedsysPhp v1.0.1"
-git push origin v1.0.1
+git tag -a v1.0.3 -m "RedsysPhp v1.0.3"
+git push origin v1.0.3
 ```

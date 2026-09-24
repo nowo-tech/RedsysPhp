@@ -4,13 +4,13 @@
 
 > ⭐ **Found this useful?** [Install from Packagist](https://packagist.org/packages/nowo-tech/redsys-php) · Give it a **star** on [GitHub](https://github.com/nowo-tech/RedsysPhp) so more developers can find it.
 
-Clean-room PHP SDK for the **public Redsys TPV Virtual protocol** (HMAC signing, redirect form, REST SIS). Namespace `Nowo\Redsys\`. License **MIT**. Release **1.0.0**.
+Clean-room PHP SDK for the **public Redsys TPV Virtual protocol** (HMAC signing, redirect form, REST SIS). Namespace `Nowo\Redsys\`. License **MIT**. Release **1.0.3**.
 
 This is an **independent implementation** written from publicly documented algorithms and endpoints. It does **not** redistribute Redsys proprietary PHPL_* library source. “Redsys” is a trademark of its respective owners.
 
 ![FrankenPHP Friendly Worker Mode](docs/images/frankenphp-friendly.png)
 
-This library is **FrankenPHP worker mode friendly**: `RedirectForm` returns an HTML string and never calls `echo` or `exit`.
+This library is **FrankenPHP worker mode friendly**: `RedirectForm` returns an HTML string and never calls `echo` or `exit`. Audited for worker with kernel **not** reset — see [docs/FRANKENPHP-WORKER-AUDIT.md](docs/FRANKENPHP-WORKER-AUDIT.md).
 
 ## Documentation
 
@@ -31,6 +31,7 @@ This library is **FrankenPHP worker mode friendly**: `RedirectForm` returns an H
 - [GitHub CI](docs/GITHUB_CI.md)
 - [Branching](docs/BRANCHING.md)
 - [FrankenPHP demo](docs/DEMO-FRANKENPHP.md)
+- [FrankenPHP worker audit](docs/FRANKENPHP-WORKER-AUDIT.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## Quick start

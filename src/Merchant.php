@@ -10,16 +10,16 @@ use Nowo\Redsys\Signature\Signer;
 /**
  * Merchant terminal credentials (FUC / terminal / signature key / environment).
  */
-final class Merchant
+final readonly class Merchant
 {
     public function __construct(
-        private readonly string $merchantCode,
-        private readonly string $terminal,
-        private readonly string $secretKey,
-        private readonly Environment $environment = Environment::Test,
-        private readonly SignatureVersion $signatureVersion = SignatureVersion::HmacSha512V2,
+        private string $merchantCode,
+        private string $terminal,
+        private string $secretKey,
+        private Environment $environment = Environment::Test,
+        private SignatureVersion $signatureVersion = SignatureVersion::HmacSha512V2,
     ) {
-        if ('' === $this->merchantCode || '' === $this->terminal || '' === $this->secretKey) {
+        if (\in_array('', [$this->merchantCode, $this->terminal, $this->secretKey], true)) {
             throw new RedsysException('Merchant code, terminal and secret key are required.');
         }
     }

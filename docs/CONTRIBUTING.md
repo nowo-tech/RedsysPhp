@@ -42,7 +42,7 @@ fails on historical trailers, run `make strip-cursor-coauthor-from-history`
 - PSR-12 via PHP-CS-Fixer (`make cs-fix`)
 - `declare(strict_types=1);` on every PHP file
 - PHPDoc and comments in **English**
-- PHPStan (FrankenPHP classic + worker rulesets)
+- PHPStan (FrankenPHP classic + worker-strict rulesets)
 
 ## Cursor Agent
 

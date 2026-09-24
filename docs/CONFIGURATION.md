@@ -27,6 +27,14 @@ $client = new RestClient($merchant, new CurlHttpClient(5, 30));
 
 `RedirectForm` only returns HTML. Build a Symfony/`Response` (or equivalent) in the host app. Do not `echo`/`exit` inside the worker.
 
+Safe under FrankenPHP worker with kernel **not** reset between requests when you:
+
+- share `Merchant` / `CurlHttpClient` / `RestClient` only for fixed deployment credentials;
+- pass notification fields from the current `Request` (`$request->request->all()`), not `$_POST` / `$_GET`;
+- do not store `MerchantParameters` / `Notification` on shared services across requests.
+
+Full audit: [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
+
 ## PSR (REQ-CS-007)
 
 See [PSR.md](PSR.md).

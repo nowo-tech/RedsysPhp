@@ -14,17 +14,17 @@ use Nowo\Redsys\SignatureVersion;
 /**
  * Parsed REST response (optionally signature-checked when Redsys returns the signed trio).
  */
-final class RestResponse
+final readonly class RestResponse
 {
     /**
      * @param array<string, mixed>|null $decodedParameters
      */
     public function __construct(
-        public readonly int $httpStatus,
-        public readonly string $rawBody,
-        public readonly ?array $decodedParameters,
-        public readonly bool $signatureValid,
-        public readonly ?string $errorCode,
+        public int $httpStatus,
+        public string $rawBody,
+        public ?array $decodedParameters,
+        public bool $signatureValid,
+        public ?string $errorCode,
     ) {
     }
 
