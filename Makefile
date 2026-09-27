@@ -139,4 +139,4 @@ BUNDLE_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 strip-cursor-coauthor-from-history:
 	@chmod +x .scripts/strip-cursor-coauthor-from-history.sh
-	@./.scripts/strip-cursor-coauthor-from-history.sh master
+	@./.scripts/strip-cursor-coauthor-from-history.sh main
