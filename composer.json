@@ -40,6 +40,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.64",
+        "igor-php/igor-php": "^0.9.7",
         "nowo-tech/phpstan-frankenphp": "^1.1",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^11.5",
@@ -67,7 +68,8 @@
             "@cs-check",
             "@phpstan",
             "@test"
-        ]
+        ],
+        "igor": "igor-php --no-agent ."
     },
     "archive": {
         "exclude": [
@@ -88,5 +90,8 @@
         "branch-alias": {
             "dev-main": "1.0.x-dev"
         }
+    },
+    "scripts-descriptions": {
+        "igor": "Run Igor FrankenPHP worker-state audit (REQ-CS-008)"
     }
 }

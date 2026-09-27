@@ -51,3 +51,7 @@ so the agent finishes the current turn before the next message.
 
 Do **not** add `Co-authored-by: Cursor <cursoragent@cursor.com>` trailers
 (REQ-GIT-001). Install hooks with `make setup-hooks`.
+
+## Igor worker audit (REQ-CS-008)
+
+Run `make igor` (or `composer igor`) before release. Igor audits package `src/` for FrankenPHP worker-state issues. It is require-dev only.

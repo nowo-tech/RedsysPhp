@@ -8,12 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.4] - 2026-09-27](#104---2026-09-27)
 - [[1.0.3] - 2026-09-24](#103---2026-09-24)
 - [[1.0.2] - 2026-08-24](#102---2026-08-24)
 - [[1.0.1] - 2026-08-21](#101---2026-08-21)
 - [[1.0.0] - 2026-08-21](#100---2026-08-21)
 
 ## [Unreleased]
+
+## [1.0.4] - 2026-09-27
+
+### Added
+
+- **REQ-CS-008:** `igor-php/igor-php` (require-dev only), root `igor.json`, Composer/`Makefile` `igor` target, and `release-check` wiring for FrankenPHP worker-state audit.
+
+[1.0.4]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.0.4
 
 ## [1.0.3] - 2026-09-24
 
