@@ -3,7 +3,16 @@
 
 ## Unreleased
 
+## To 1.0.5
+
+From **1.0.4** — CI/test and maintainers tooling. **No application upgrade steps.**
+
+```bash
+composer update nowo-tech/redsys-php
+```
+
 ## To 1.0.4
+
 
 From **1.0.3** — REQ-CS-008 Igor FrankenPHP worker audit (igor-php require-dev, igor.json, make igor).
 

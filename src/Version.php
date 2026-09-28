@@ -9,5 +9,5 @@ namespace Nowo\Redsys;
  */
 final class Version
 {
-    public const string VERSION = '1.0.3';
+    public const string VERSION = '1.0.5';
 }

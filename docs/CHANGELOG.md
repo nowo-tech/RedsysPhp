@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.5] - 2026-09-28](#105---2026-09-28)
 - [[1.0.4] - 2026-09-27](#104---2026-09-27)
 - [[1.0.3] - 2026-09-24](#103---2026-09-24)
 - [[1.0.2] - 2026-08-24](#102---2026-08-24)
@@ -16,7 +17,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-09-28
+
+### Fixed
+
+- Integration test: skip `CurlHttpClient` HTTPS echo assertion when httpbin returns a non-200 (transient upstream), and apply PHP CS Fixer.
+- Makefile: point `strip-cursor-coauthor` target at `main`.
+
+### Changed
+
+- Dev dependency: `nowo-tech/phpstan-frankenphp` 1.2.0.
+- **Identity:** `Version::VERSION` and `extra.nowo-package-version` report `1.0.5`.
+
+[1.0.5]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.0.5
+
 ## [1.0.4] - 2026-09-27
+
 
 ### Added
 
