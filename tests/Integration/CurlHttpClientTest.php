@@ -23,8 +23,8 @@ final class CurlHttpClientTest extends TestCase
         );
 
         self::assertInstanceOf(HttpResponse::class, $response);
-        if ($response->statusCode !== 200) {
-            self::markTestSkipped(sprintf(
+        if (200 !== $response->statusCode) {
+            self::markTestSkipped(\sprintf(
                 'Public HTTPS echo returned HTTP %d (transient upstream); CurlHttpClient still returned a response.',
                 $response->statusCode,
             ));
