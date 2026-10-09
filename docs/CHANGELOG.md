@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+  - [Changed](#changed)
 - [[1.0.6] - 2026-10-09](#106---2026-10-09)
 - [[1.0.5] - 2026-09-28](#105---2026-09-28)
 - [[1.0.4] - 2026-09-27](#104---2026-09-27)
@@ -17,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-08-21](#100---2026-08-21)
 
 ## [Unreleased]
+
+### Changed
+
+- Development: `composer.json` pins `config.platform.php` to 8.3.0 so the committed lock stays installable on the minimum PHP.
 
 ## [1.0.6] - 2026-10-09
 
