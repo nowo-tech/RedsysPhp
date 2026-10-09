@@ -3,6 +3,16 @@
 
 ## Unreleased
 
+## To 1.0.6
+
+From **1.0.5** — dependency updates.
+
+```bash
+composer update nowo-tech/redsys-php
+```
+
+No breaking changes. No application upgrade steps.
+
 ## To 1.0.5
 
 From **1.0.4** — CI/test and maintainers tooling. **No application upgrade steps.**
@@ -25,6 +35,7 @@ php bin/console cache:clear
 
 ## Table of contents
 
+- [To 1.0.6](#to-106)
 - [From 1.0.2 to 1.0.3](#from-102-to-103)
 - [From 1.0.1 to 1.0.2](#from-101-to-102)
 - [To 1.0.0 (clean-room)](#to-100-clean-room)

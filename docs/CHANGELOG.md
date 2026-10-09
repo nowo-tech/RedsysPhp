@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.6] - 2026-10-09](#106---2026-10-09)
 - [[1.0.5] - 2026-09-28](#105---2026-09-28)
 - [[1.0.4] - 2026-09-27](#104---2026-09-27)
 - [[1.0.3] - 2026-09-24](#103---2026-09-24)
@@ -16,6 +17,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-08-21](#100---2026-08-21)
 
 ## [Unreleased]
+
+## [1.0.6] - 2026-10-09
+
+### Fixed
+
+- CI: `composer.lock` content-hash re-synced after the package identity bump.
+
+### Changed
+
+- **Identity:** `Version::VERSION` and `extra.nowo-package-version` report `1.0.6`.
+
+### Dependencies
+
+- Dev tooling: `igor-php/igor-php` ^0.10 (v0.10.1, Dependabot #12), `nowo-tech/phpstan-frankenphp` v1.2.3 (#13), `phpstan/phpstan` 2.3.1, `rector/rector` 2.7.0, `phpunit/phpunit` 11.5.57.
+- Demo (Symfony 8): `twig/twig` v3.30.0, `twig/extra-bundle` v3.29.0, `nowo-tech/hot-reload-bundle` v1.5.5, `nowo-tech/twig-inspector-bundle` v1.1.7.
+
+[1.0.6]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.0.6
 
 ## [1.0.5] - 2026-09-28
 
