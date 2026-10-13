@@ -3,7 +3,7 @@
 | Field | Value |
 |-------|-------|
 | Package | `nowo-tech/redsys-php` (`library`, framework-agnostic, no Symfony bundle) |
-| Audited revision | `v1.0.9` (`Notification::isSuccessfulForTransactionType()` is stateless) |
+| Audited revision | `v1.0.10` (`Notification::isSuccessfulForTransactionType()` is stateless) |
 | Audit date | 2026-10-13 (re-checked; first audit 2026-09-24 on `v1.0.3`) |
 | Method | Manual review of every file under `src/` plus the non-Composer `autoload.php` + PHPStan classic / **worker-strict** rulesets |
 | **Verdict** | ✅ **Viable** — immutable objects (`final readonly class`), no globals, no output; only a Low note on the default HTTP timeout |
