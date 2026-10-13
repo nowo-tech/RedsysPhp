@@ -1,5 +1,18 @@
 # Upgrading
 
+## Table of contents
+
+- [Unreleased](#unreleased)
+- [To 1.0.9](#to-109)
+- [To 1.0.8](#to-108)
+- [To 1.0.7](#to-107)
+- [To 1.0.6](#to-106)
+- [To 1.0.5](#to-105)
+- [To 1.0.4](#to-104)
+- [From 1.0.2 to 1.0.3](#from-102-to-103)
+- [From 1.0.1 to 1.0.2](#from-101-to-102)
+- [To 1.0.0 (clean-room)](#to-100-clean-room)
+
 ## Unreleased
 
 ## To 1.0.9
@@ -59,16 +72,6 @@ composer update nowo-tech/redsys-php
 ```
 
 - No application upgrade steps for require-dev Igor tooling (REQ-CS-008). Consumers do not pull `igor-php/igor-php` transitively.
-
-## Table of contents
-
-- [To 1.0.9](#to-109)
-- [To 1.0.8](#to-108)
-- [To 1.0.7](#to-107)
-- [To 1.0.6](#to-106)
-- [From 1.0.2 to 1.0.3](#from-102-to-103)
-- [From 1.0.1 to 1.0.2](#from-101-to-102)
-- [To 1.0.0 (clean-room)](#to-100-clean-room)
 
 ## From 1.0.2 to 1.0.3
 
