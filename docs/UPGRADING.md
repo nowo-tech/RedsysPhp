@@ -1,7 +1,16 @@
 # Upgrading
 
-
 ## Unreleased
+
+## To 1.0.7
+
+From **1.0.6** — dependency refresh and repository maintenance.
+
+```bash
+composer update nowo-tech/redsys-php
+```
+
+- No breaking changes. No application upgrade steps.
 
 ## To 1.0.6
 
@@ -23,7 +32,6 @@ composer update nowo-tech/redsys-php
 
 ## To 1.0.4
 
-
 From **1.0.3** — REQ-CS-008 Igor FrankenPHP worker audit (igor-php require-dev, igor.json, make igor).
 
 ```bash
@@ -35,6 +43,7 @@ php bin/console cache:clear
 
 ## Table of contents
 
+- [To 1.0.7](#to-107)
 - [To 1.0.6](#to-106)
 - [From 1.0.2 to 1.0.3](#from-102-to-103)
 - [From 1.0.1 to 1.0.2](#from-101-to-102)

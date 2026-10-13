@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [[Unreleased]](#unreleased)
   - [Changed](#changed)
+- [[1.0.7] - 2026-10-13](#107---2026-10-13)
 - [[1.0.6] - 2026-10-09](#106---2026-10-09)
 - [[1.0.5] - 2026-09-28](#105---2026-09-28)
 - [[1.0.4] - 2026-09-27](#104---2026-09-27)
@@ -19,9 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-10-13
+
 ### Changed
 
 - Development: `composer.json` pins `config.platform.php` to 8.3.0 so the committed lock stays installable on the minimum PHP.
+
+[1.0.7]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.0.7
 
 ## [1.0.6] - 2026-10-09
 
@@ -55,7 +60,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.5]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.0.5
 
 ## [1.0.4] - 2026-09-27
-
 
 ### Added
 
