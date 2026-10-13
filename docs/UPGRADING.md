@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 1.0.10](#to-1010)
 - [To 1.0.9](#to-109)
 - [To 1.0.8](#to-108)
 - [To 1.0.7](#to-107)
@@ -14,6 +15,16 @@
 - [To 1.0.0 (clean-room)](#to-100-clean-room)
 
 ## Unreleased
+
+## To 1.0.10
+
+From **1.0.9** — version metadata matches the release
+
+```bash
+composer update nowo-tech/redsys-php
+```
+
+- No breaking changes. No application upgrade steps.
 
 ## To 1.0.9
 

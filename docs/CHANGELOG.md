@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.10] - 2026-10-13](#1010---2026-10-13)
 - [[1.0.9] - 2026-10-13](#109---2026-10-13)
 - [[1.0.8] - 2026-10-13](#108---2026-10-13)
 - [[1.0.7] - 2026-10-13](#107---2026-10-13)
@@ -21,9 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.10] - 2026-10-13
+
 ### Fixed
 
 - Version metadata now matches the release (1.0.9 shipped with 1.0.8): `Version::VERSION` and `composer.json` `extra.nowo-package-version` are set to `1.0.10` for the next patch (README release line and worker audit revision updated too).
+
+[1.0.10]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.0.10
 
 ## [1.0.9] - 2026-10-13
 
