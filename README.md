@@ -4,7 +4,7 @@
 
 > ⭐ **Found this useful?** [Install from Packagist](https://packagist.org/packages/nowo-tech/redsys-php) · Give it a **star** on [GitHub](https://github.com/nowo-tech/RedsysPhp) so more developers can find it.
 
-Clean-room PHP SDK for the **public Redsys TPV Virtual protocol** (HMAC signing, redirect form, REST SIS). Namespace `Nowo\Redsys\`. License **MIT**. Release **1.0.3**.
+Clean-room PHP SDK for the **public Redsys TPV Virtual protocol** (HMAC signing, redirect form, REST SIS). Namespace `Nowo\Redsys\`. License **MIT**. Release **1.0.8**.
 
 This is an **independent implementation** written from publicly documented algorithms and endpoints. It does **not** redistribute Redsys proprietary PHPL_* library source. “Redsys” is a trademark of its respective owners.
 
