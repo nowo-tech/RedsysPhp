@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `Version::VERSION` and `composer.json` `extra.nowo-package-version` were left at `1.0.8` in the `v1.0.9` tag; set to `1.0.9` (README release line and worker audit revision updated too). Bump them to the next version when releasing.
+
 ## [1.0.9] - 2026-10-13
 
 ### Added
