@@ -13,6 +13,7 @@
 ## Tagging
 
 ```sh
-git tag -a v1.0.3 -m "RedsysPhp v1.0.3"
-git push origin v1.0.3
+# X.Y.Z = the version in src/Version.php (e.g. 1.0.9)
+git tag -a vX.Y.Z -m "RedsysPhp vX.Y.Z"
+git push origin vX.Y.Z
 ```

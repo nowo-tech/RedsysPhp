@@ -27,7 +27,7 @@ Build `MerchantParameters`, then `RedirectForm::forMerchant()` → HTML string. 
 
 ## Notification
 
-`Notification::fromRequest($request->request->all(), $merchant)` (or query fields on browser return) verifies the signature and exposes `isAuthorized()` (`Ds_Response` in `0000`–`0099`). Prefer the Symfony `Request` over `$_POST` / `$_GET` under FrankenPHP worker mode. See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
+`Notification::fromRequest($request->request->all(), $merchant)` (or query fields on browser return) verifies the signature and exposes `isAuthorized()` (`Ds_Response` in `0000`–`0099`, payments and pre-authorizations). For refunds, confirmations and cancellations use `isSuccessfulForTransactionType()`: it accepts `0900` for refund (3) / confirmation (2), `0400` for cancellation (9), and falls back to `0000`–`0099` for other types; pass a `TransactionType` to check against the operation you requested instead of the notification's `Ds_TransactionType` (exposed by `transactionType()`). Prefer the Symfony `Request` over `$_POST` / `$_GET` under FrankenPHP worker mode. See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
 
 ## REST SIS
 

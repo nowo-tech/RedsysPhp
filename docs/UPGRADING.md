@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- New `Notification::isSuccessfulForTransactionType()` and `Notification::transactionType()`. `isAuthorized()` is unchanged (0000–0099). If you process refund (3), confirmation (2) or cancellation (9) notifications, switch to `isSuccessfulForTransactionType()`: Redsys reports their success as `0900` / `0400`, which `isAuthorized()` treats as failed.
+
 ## To 1.0.8
 
 From **1.0.7** — security: signatures verified only with the merchant's configured version.
@@ -46,7 +48,6 @@ From **1.0.3** — REQ-CS-008 Igor FrankenPHP worker audit (igor-php require-dev
 
 ```bash
 composer update nowo-tech/redsys-php
-php bin/console cache:clear
 ```
 
 - No application upgrade steps for require-dev Igor tooling (REQ-CS-008). Consumers do not pull `igor-php/igor-php` transitively.

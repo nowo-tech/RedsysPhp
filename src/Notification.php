@@ -82,7 +82,7 @@ final readonly class Notification
     }
 
     /**
-     * DS_RESPONSE / Ds_Response — authorized when numeric value is in 0..99.
+     * DS_RESPONSE / Ds_Response as sent by Redsys (e.g. "0000", "0900", "0190").
      */
     public function responseCode(): ?string
     {
@@ -92,16 +92,61 @@ final readonly class Notification
         return \is_string($value) || \is_int($value) ? (string) $value : null;
     }
 
+    /**
+     * Ds_TransactionType of the notified operation, or null when absent / not a known type.
+     */
+    public function transactionType(): ?TransactionType
+    {
+        $fields = $this->decoded->toArray();
+        $value = $fields['Ds_TransactionType'] ?? $fields['DS_TRANSACTIONTYPE'] ?? null;
+        if (!\is_string($value) && !\is_int($value)) {
+            return null;
+        }
+
+        return TransactionType::tryFrom((string) $value);
+    }
+
+    /**
+     * Payment / pre-authorization success: Ds_Response in 0000..0099.
+     *
+     * Refunds, confirmations and cancellations report success with other codes
+     * (0900, 0400): use {@see isSuccessfulForTransactionType()} for those.
+     */
     public function isAuthorized(): bool
+    {
+        $numeric = $this->numericResponseCode();
+
+        return null !== $numeric && $numeric >= 0 && $numeric <= 99;
+    }
+
+    /**
+     * Success check that understands the response code of each transaction type:
+     *
+     * - Refund (3) and Confirmation (2): Ds_Response 0900;
+     * - Cancellation (9): Ds_Response 0400;
+     * - any other type: Ds_Response 0000..0099 (same as {@see isAuthorized()}).
+     *
+     * @param TransactionType|null $type Expected type; null uses the notification's Ds_TransactionType
+     */
+    public function isSuccessfulForTransactionType(?TransactionType $type = null): bool
+    {
+        $type ??= $this->transactionType();
+
+        return match ($type) {
+            TransactionType::Refund, TransactionType::Confirmation => 900 === $this->numericResponseCode(),
+            TransactionType::Cancellation => 400 === $this->numericResponseCode(),
+            default => $this->isAuthorized(),
+        };
+    }
+
+    private function numericResponseCode(): ?int
     {
         $code = $this->responseCode();
         if (null === $code || !ctype_digit($code)) {
-            return false;
+            return null;
         }
 
-        $numeric = (int) $code;
-
-        return $numeric >= 0 && $numeric <= 99;
+        return (int) $code;
     }
 
     private static function extractOrder(MerchantParameters $parameters): string

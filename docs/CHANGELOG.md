@@ -22,6 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Notification::isSuccessfulForTransactionType(?TransactionType $type = null)`: refunds and confirmations succeed with `Ds_Response` `0900`, cancellations with `0400`; other types use the `0000`–`0099` rule of `isAuthorized()`. `Notification::transactionType()` exposes `Ds_TransactionType`.
+
+### Fixed
+
+- Docs: "To 1.0.4" in UPGRADING no longer tells library users to run `cache:clear`; RELEASE.md uses a generic tag example; FRANKENPHP-WORKER-AUDIT.md audited revision updated to `v1.0.8`.
+
 ## [1.0.8] - 2026-10-13
 
 ### Security
