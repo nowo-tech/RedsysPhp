@@ -69,7 +69,8 @@ final class PaymentController extends AbstractController
     {
         try {
             $notification = Notification::fromRequest($request->request->all(), $this->merchant());
-            $authorized = $notification->isAuthorized();
+            // Refunds/confirmations succeed with 0900, cancellations with 0400 (RedsysPhp 1.0.9+).
+            $authorized = $notification->isSuccessfulForTransactionType();
             $code = $notification->responseCode() ?? 'n/a';
 
             return new Response(

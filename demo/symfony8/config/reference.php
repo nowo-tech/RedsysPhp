@@ -154,7 +154,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         cookie_name?: scalar|Param|null, // The name of the cookie to use when using stateless protection. // Default: "csrf-token"
  *     },
  *     form?: bool|array{ // Form configuration
- *         enabled?: bool|Param, // Default: true
+ *         enabled?: bool|Param, // Default: false
  *         csrf_protection?: bool|array{
  *             enabled?: scalar|Param|null, // Default: null
  *             token_id?: scalar|Param|null, // Default: null
@@ -305,7 +305,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         },
  *     },
  *     translator?: bool|array{ // Translator configuration
- *         enabled?: bool|Param, // Default: true
+ *         enabled?: bool|Param, // Default: false
  *         fallbacks?: Param|string|list<scalar|Param|null>,
  *         logging?: bool|Param, // Default: false
  *         formatter?: scalar|Param|null, // Default: "translator.formatter.default"
@@ -333,7 +333,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         }>,
  *     },
  *     validation?: bool|array{ // Validation configuration
- *         enabled?: bool|Param, // Default: true
+ *         enabled?: bool|Param, // Default: false
  *         enable_attributes?: bool|Param, // Default: true
  *         static_method?: Param|string|list<scalar|Param|null>,
  *         translation_domain?: scalar|Param|null, // Default: "validators"
@@ -369,7 +369,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         }>,
  *     },
  *     property_access?: bool|array{ // Property access configuration
- *         enabled?: bool|Param, // Default: true
+ *         enabled?: bool|Param, // Default: false
  *         magic_call?: bool|Param, // Default: false
  *         magic_get?: bool|Param, // Default: true
  *         magic_set?: bool|Param, // Default: true
@@ -377,11 +377,11 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         throw_exception_on_invalid_property_path?: bool|Param, // Default: true
  *     },
  *     type_info?: bool|array{ // Type info configuration
- *         enabled?: bool|Param, // Default: true
+ *         enabled?: bool|Param, // Default: false
  *         aliases?: array<string, scalar|Param|null>,
  *     },
  *     property_info?: bool|array{ // Property info configuration
- *         enabled?: bool|Param, // Default: true
+ *         enabled?: bool|Param, // Default: false
  *         with_constructor_extractor?: bool|Param, // Registers the constructor extractor. // Default: true
  *     },
  *     cache?: array{ // Cache configuration
@@ -687,10 +687,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         signing_algorithm?: scalar|Param|null, // Default: "sha256"
  *         routing?: array<string, array{ // Default: []
  *             service?: scalar|Param|null,
- *             secret?: scalar|Param|null, // Default: ""
+ *             secret?: scalar|Param|null, // The secret used to verify incoming request signatures. It must be set in production: with an empty value, depending on the parser, requests from any sender are accepted or every request is rejected. // Default: ""
  *         }>,
  *     },
- *     remote-event?: bool|array{ // RemoteEvent configuration
+ *     remote_event?: bool|array{ // RemoteEvent configuration
  *         enabled?: bool|Param, // Default: false
  *     },
  *     json_streamer?: bool|array{ // JSON streamer configuration
@@ -707,6 +707,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         id?: scalar|Param|null,
  *         type?: scalar|Param|null,
  *         value?: mixed,
+ *         ...<string, mixed>
  *     }>,
  *     autoescape_service?: scalar|Param|null, // Default: null
  *     autoescape_service_method?: scalar|Param|null, // Default: null
@@ -780,17 +781,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         ...<string, mixed>
  *     },
  * }
- * @psalm-type TwigComponentConfig = array{
- *     defaults?: array<string, Param|string|array{ // Default: []
- *         template_directory?: scalar|Param|null, // Default: "components"
- *         name_prefix?: scalar|Param|null, // Default: ""
- *     }>,
- *     anonymous_template_directory?: scalar|Param|null, // Defaults to `components`
- *     profiler?: bool|array{ // Enables the profiler for Twig Component
- *         enabled?: bool|Param, // Default: "%kernel.debug%"
- *         collect_components?: bool|Param, // Collect components instances // Default: true
- *     },
- * }
  * @psalm-type DebugConfig = array{
  *     max_items?: int|Param, // Max number of displayed items past the first level, -1 means no limit. // Default: 2500
  *     min_depth?: int|Param, // Minimum tree depth to clone all the items, 1 is default. // Default: 1
@@ -806,115 +796,22 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     intercept_redirects?: bool|Param, // Default: false
  *     excluded_ajax_paths?: scalar|Param|null, // Default: "^/((index|app(_[\\w]+)?)\\.php/)?_wdt"
  * }
- * @psalm-type NowoQrCodeConfig = array{
- *     use_database_config?: bool|Param, // When true, Doctrine rows with the same profile name fully override YAML profiles; enables admin CRUD and requires doctrine/orm // Default: false
- *     doctrine?: array{
- *         table_prefix?: scalar|Param|null, // Optional prefix for the qr_code_profile table (e.g. nowo_ → nowo_qr_code_profile) // Default: ""
- *     },
- *     security?: array{
- *         access_roles?: list<scalar|Param|null>,
- *         access_checker?: scalar|Param|null, // Optional service id implementing QrCodeAccessCheckerInterface // Default: null
- *         allow_unauthenticated?: bool|Param, // When true, admin CRUD is open (demo/dev only) // Default: false
- *     },
- *     web_ui?: array{
- *         layout_template?: scalar|Param|null, // Twig layout extended by admin/base.html.twig (global nowo_qr_code_layout_template). Set to your app layout or a one-file bridge. // Default: "@NowoRedsysPhp/admin/layout.html.twig"
- *         css_framework?: "bootstrap"|"bootstrap4"|"bootstrap5"|"tabler"|"tailwind"|"foundation"|"custom"|"none"|Param, // Host CSS stack hint: bootstrap5 (alias bootstrap) | bootstrap4 | tabler | tailwind | foundation | custom | none. Default custom matches the demo standalone layout. // Default: "custom"
- *     },
- *     default_profile?: scalar|Param|null, // Profile used when no explicit profile is passed to the service / Twig helpers // Default: "default"
- *     profiles?: array<string, array{ // Default: {"default":{"size":300,"margin":10,"error_correction":"high","url_allowlist":[]}}
- *         size?: int|Param, // QR code size in pixels // Default: 300
- *         margin?: int|Param, // QR code quiet zone margin in pixels // Default: 10
- *         error_correction?: "low"|"medium"|"quartile"|"high"|Param, // QR error correction level: low, medium, quartile, high // Default: "high"
- *         url_allowlist?: list<scalar|Param|null>,
- *     }>,
- * }
- * @psalm-type NowoUiKitConfig = array{
- *     css_framework?: "bootstrap"|"bootstrap5"|"bootstrap4"|"tailwind"|"foundation"|"custom"|"tabler"|"none"|Param, // Host CSS stack: bootstrap5|bootstrap4|tailwind|foundation|custom|none|tabler (bootstrap alias → bootstrap5). // Default: "bootstrap5"
- *     icon_set?: "bootstrap-icons"|"tabler-icons"|"ux_icon"|"svg_inline"|"none"|Param, // Icon rendering: bootstrap-icons|tabler-icons|ux_icon|svg_inline|none. // Default: "bootstrap-icons"
- * }
- * @psalm-type NowoFormKitConfig = array{
- *     type_map?: array<string, scalar|Param|null>,
- *     default_profile?: scalar|Param|null, // Name of the profile to use when no profile is specified (key in profiles) // Default: "default"
- *     css_framework?: scalar|Param|null, // CSS framework for CssClassUtilities (column merge + class ordering): bootstrap, tailwind, foundation, none. // Default: "bootstrap"
- *     profiles?: array<string, array{ // Default: []
- *         alias?: scalar|Param|null, // Alias for this profile (e.g. for reference in form types)
- *         translation_domain?: scalar|Param|null, // Default: "messages"
- *         required_label_suffix?: scalar|Param|null, // Appended to the label when the field is required (e.g. " *"). Empty or null to disable. // Default: null
- *         help_modal?: array{ // Default help modal configuration (used when the field option "help_modal" is enabled).
- *             framework?: scalar|Param|null, // Modal framework to use when opening from frontend. // Default: "bootstrap5"
- *             icon_html?: scalar|Param|null, // HTML snippet inserted next to the label to trigger the help modal (fallback when ux_icon is not used or UX Icons is unavailable). // Default: "<span class=\"nowo-help-modal-icon\" aria-hidden=\"true\">?</span>"
- *             ux_icon?: scalar|Param|null, // Optional. Symfony UX Icons name (e.g. lucide:circle-help). Requires symfony/ux-icons; when set and IconRendererInterface is available, overrides icon_html. // Default: null
- *             ux_icon_attributes?: array<string, scalar|Param|null>,
- *             trigger_class?: scalar|Param|null, // CSS classes for the clickable trigger wrapper (after label text and required suffix). Default: circle button style. // Default: "nowo-help-modal-trigger nowo-help-modal-trigger--circle"
- *         },
- *         defaults?: array{
- *             attr?: array<string, scalar|Param|null>,
- *             row_attr?: array<string, scalar|Param|null>,
- *         },
- *         field_types?: array<string, array{ // Default: []
- *             attr?: array<string, scalar|Param|null>,
- *             row_attr?: array<string, scalar|Param|null>,
- *             label?: scalar|Param|null,
- *             placeholder?: scalar|Param|null,
- *             help?: scalar|Param|null,
- *             translation_domain?: scalar|Param|null,
- *             constraints?: list<mixed>,
- *         }>,
- *         constraint_message_convention?: bool|Param, // When true, constraints without an explicit "message" get key {form_snake}.{field_snake}.constraints.{ConstraintName} (put translations in the validators catalog). Default: false. // Default: false
- *         by_form?: array<string, array{ // Default: []
- *             defaults?: array{
- *                 attr?: array<string, scalar|Param|null>,
- *                 row_attr?: array<string, scalar|Param|null>,
- *             },
- *             fields?: array<string, array{ // Default: []
- *                 attr?: array<string, scalar|Param|null>,
- *                 row_attr?: array<string, scalar|Param|null>,
- *                 label?: scalar|Param|null,
- *                 placeholder?: scalar|Param|null,
- *                 help?: scalar|Param|null,
- *                 translation_domain?: scalar|Param|null,
- *                 constraints?: list<mixed>,
- *             }>,
- *         }>,
- *     }>,
- *     translation_domain?: scalar|Param|null, // (Legacy) Used when profiles is not set // Default: "messages"
- *     required_label_suffix?: scalar|Param|null, // (Legacy) Suffix for required field labels when profiles is not set // Default: null
- *     help_modal?: array{ // (Legacy) Default help modal configuration when profiles is not used.
- *         framework?: scalar|Param|null, // Default: "bootstrap5"
- *         icon_html?: scalar|Param|null, // Default: "<span class=\"nowo-help-modal-icon\" aria-hidden=\"true\">?</span>"
- *         ux_icon?: scalar|Param|null, // Default: null
- *         ux_icon_attributes?: array<string, scalar|Param|null>,
- *         trigger_class?: scalar|Param|null, // Default: "nowo-help-modal-trigger nowo-help-modal-trigger--circle"
- *     },
- *     defaults?: array{
- *         attr?: array<string, scalar|Param|null>,
- *         row_attr?: array<string, scalar|Param|null>,
- *     },
- *     field_types?: array<string, array{ // Default: []
- *         attr?: array<string, scalar|Param|null>,
- *         row_attr?: array<string, scalar|Param|null>,
- *         label?: scalar|Param|null,
- *         placeholder?: scalar|Param|null,
- *         help?: scalar|Param|null,
- *         translation_domain?: scalar|Param|null,
- *         constraints?: list<mixed>,
- *     }>,
- *     constraint_message_convention?: bool|Param, // (Legacy) Used when profiles is not set // Default: false
- *     by_form?: array<string, array{ // Default: []
- *         defaults?: array{
- *             attr?: array<string, scalar|Param|null>,
- *             row_attr?: array<string, scalar|Param|null>,
- *         },
- *         fields?: array<string, array{ // Default: []
- *             attr?: array<string, scalar|Param|null>,
- *             row_attr?: array<string, scalar|Param|null>,
- *             label?: scalar|Param|null,
- *             placeholder?: scalar|Param|null,
- *             help?: scalar|Param|null,
- *             translation_domain?: scalar|Param|null,
- *             constraints?: list<mixed>,
- *         }>,
- *     }>,
+ * @psalm-type NowoHotReloadConfig = array{
+ *     enabled?: bool|Param, // Master switch. When false, nothing is injected even if FRANKENPHP_HOT_RELOAD is set. // Default: true
+ *     auto_inject?: bool|Param, // When true, HotReloadResponseSubscriber injects assets into HTML responses. // Default: true
+ *     ignore_path_prefixes?: list<scalar|Param|null>,
+ *     client_mode?: "cdn"|"visibility"|"shared_worker"|"always"|Param, // Browser Mercure client strategy: cdn (default ESM), visibility (SSE while tab visible), shared_worker (one SSE for all tabs), always (SSE per tab). // Default: "cdn"
+ *     require_frankenphp_env?: bool|Param, // When true (default), inject only if FRANKENPHP_HOT_RELOAD is set or mercure_url is configured. // Default: true
+ *     allow_production?: bool|Param, // When false (default), enabling this bundle in the prod environment raises InvalidConfigurationException. // Default: false
+ *     mercure_url?: scalar|Param|null, // Optional Mercure hub URL. When null, uses $_SERVER['FRANKENPHP_HOT_RELOAD'] when present. // Default: null
+ *     idiomorph?: bool|Param, // When true, include Idiomorph for DOM morphing instead of a full page reload. // Default: true
+ *     idiomorph_script_url?: scalar|Param|null, // URL of the Idiomorph script (classic script tag). Prefer a version-pinned CDN URL. // Default: "https://cdn.jsdelivr.net/npm/idiomorph@0.7.4"
+ *     hot_reload_script_url?: scalar|Param|null, // URL of the frankenphp-hot-reload ESM module. Prefer a version-pinned CDN URL. // Default: "https://cdn.jsdelivr.net/npm/frankenphp-hot-reload@1.0.1/+esm"
+ *     preserve_selectors?: list<scalar|Param|null>,
+ *     preserve_observe?: bool|Param, // When true, the preserve boot script also uses MutationObserver for late-injected toolbar nodes. // Default: true
+ *     csp_nonce_request_attribute?: scalar|Param|null, // Request attribute name that holds the CSP nonce (e.g. "_csp_nonce"). Applied to the inline preserve boot script. // Default: null
+ *     csp_augment_script_src?: bool|Param, // When true, append CDN hosts to an existing Content-Security-Policy script-src on the response after injection. // Default: true
+ *     csp_script_src_hosts?: list<scalar|Param|null>,
  * }
  * @psalm-type NowoTwigInspectorConfig = array{
  *     enabled_extensions?: list<scalar|Param|null>,
@@ -939,10 +836,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     framework?: FrameworkConfig,
  *     twig?: TwigConfig,
  *     twig_extra?: TwigExtraConfig,
- *     twig_component?: TwigComponentConfig,
- *     nowo_qr_code?: NowoQrCodeConfig,
- *     nowo_ui_kit?: NowoUiKitConfig,
- *     nowo_form_kit?: NowoFormKitConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -950,12 +843,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         framework?: FrameworkConfig,
  *         twig?: TwigConfig,
  *         twig_extra?: TwigExtraConfig,
- *         twig_component?: TwigComponentConfig,
  *         debug?: DebugConfig,
  *         web_profiler?: WebProfilerConfig,
- *         nowo_qr_code?: NowoQrCodeConfig,
- *         nowo_ui_kit?: NowoUiKitConfig,
- *         nowo_form_kit?: NowoFormKitConfig,
+ *         nowo_hot_reload?: NowoHotReloadConfig,
  *         nowo_twig_inspector?: NowoTwigInspectorConfig,
  *     },
  *     "when@prod"?: array{
@@ -965,10 +855,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         framework?: FrameworkConfig,
  *         twig?: TwigConfig,
  *         twig_extra?: TwigExtraConfig,
- *         twig_component?: TwigComponentConfig,
- *         nowo_qr_code?: NowoQrCodeConfig,
- *         nowo_ui_kit?: NowoUiKitConfig,
- *         nowo_form_kit?: NowoFormKitConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -977,10 +863,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         framework?: FrameworkConfig,
  *         twig?: TwigConfig,
  *         twig_extra?: TwigExtraConfig,
- *         twig_component?: TwigComponentConfig,
- *         nowo_qr_code?: NowoQrCodeConfig,
- *         nowo_ui_kit?: NowoUiKitConfig,
- *         nowo_form_kit?: NowoFormKitConfig,
+ *         nowo_hot_reload?: NowoHotReloadConfig,
  *         nowo_twig_inspector?: NowoTwigInspectorConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
