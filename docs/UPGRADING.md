@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## To 1.0.8
+
+From **1.0.7** — security: signatures verified only with the merchant's configured version.
+
+```bash
+composer update nowo-tech/redsys-php
+```
+
+- **Behaviour change:** notifications whose `Ds_SignatureVersion` differs from the `Merchant` signature version now throw `RedsysException`, and REST responses report `signatureValid=false`. Configure the version your terminal really uses (the default is `HmacSha512V2`).
+
 ## To 1.0.7
 
 From **1.0.6** — dependency refresh and repository maintenance.
@@ -43,6 +53,7 @@ php bin/console cache:clear
 
 ## Table of contents
 
+- [To 1.0.8](#to-108)
 - [To 1.0.7](#to-107)
 - [To 1.0.6](#to-106)
 - [From 1.0.2 to 1.0.3](#from-102-to-103)

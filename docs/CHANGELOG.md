@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[Unreleased]](#unreleased)
   - [Security](#security)
   - [Changed](#changed)
+- [[1.0.8] - 2026-10-13](#108---2026-10-13)
 - [[1.0.7] - 2026-10-13](#107---2026-10-13)
 - [[1.0.6] - 2026-10-09](#106---2026-10-09)
 - [[1.0.5] - 2026-09-28](#105---2026-09-28)
@@ -21,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.8] - 2026-10-13
+
 ### Security
 
 - `Notification::fromRequest()` and `RestResponse::fromHttp()` verify signatures with the merchant's configured `SignatureVersion` only; a different (attacker-supplied) `Ds_SignatureVersion` is rejected instead of selecting the verification algorithm (downgrade). **Behaviour change:** notifications whose `Ds_SignatureVersion` differs from `Merchant::signatureVersion()` now throw `RedsysException`; REST responses report `signatureValid = false`.
@@ -29,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `Version::VERSION` and `composer.json` `extra.nowo-package-version` set to `1.0.8` (were stuck at `1.0.6`); README release line updated.
+
+[1.0.8]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.0.8
 
 ## [1.0.7] - 2026-10-13
 
