@@ -15,6 +15,7 @@ final readonly class Merchant
     public function __construct(
         private string $merchantCode,
         private string $terminal,
+        #[\SensitiveParameter]
         private string $secretKey,
         private Environment $environment = Environment::Test,
         private SignatureVersion $signatureVersion = SignatureVersion::HmacSha512V2,

@@ -45,11 +45,16 @@ final readonly class Notification
             throw new RedsysException(\sprintf('Unsupported Ds_SignatureVersion "%s".', $versionRaw));
         }
 
+        // The algorithm is the merchant's configured one: Ds_SignatureVersion is attacker-controlled,
+        // so honouring it would allow a downgrade to a weaker scheme.
+        if ($version !== $merchant->signatureVersion()) {
+            throw new RedsysException(\sprintf('Ds_SignatureVersion "%s" does not match the merchant signature version "%s".', $versionRaw, $merchant->signatureVersion()->value));
+        }
+
         $decoded = MerchantParameters::decode($encoded);
         $order = self::extractOrder($decoded);
 
-        $signer = new Signature\Signer($merchant->secretKey(), $version);
-        if (!$signer->verify($encoded, $order, $signature)) {
+        if (!$merchant->signer()->verify($encoded, $order, $signature)) {
             throw new RedsysException('Invalid Redsys notification signature.');
         }
 

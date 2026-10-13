@@ -22,4 +22,6 @@ See [.github/SECURITY.md](../.github/SECURITY.md) for private disclosure.
 ## Threat notes
 
 - Signature bypass → financial fraud: always `hash_equals` via `Signer::verify`.
+- Algorithm downgrade: `Ds_SignatureVersion` comes from the (untrusted) request. `Notification::fromRequest` and `RestResponse::fromHttp` always verify with the `Merchant`'s configured `SignatureVersion`; a different value is rejected (`RedsysException` / `signatureValid = false`).
+- Secret key in stack traces: `Merchant` and `Signer` constructors mark the key `#[\SensitiveParameter]`.
 - Key leak across workers: this SDK is instance-based (`Merchant` is `final readonly class`); no process-wide static credentials. See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).

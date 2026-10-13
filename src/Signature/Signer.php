@@ -18,6 +18,7 @@ use Nowo\Redsys\SignatureVersion;
 final readonly class Signer
 {
     public function __construct(
+        #[\SensitiveParameter]
         private string $merchantKey,
         private SignatureVersion $version = SignatureVersion::HmacSha512V2,
     ) {

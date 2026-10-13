@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+  - [Security](#security)
   - [Changed](#changed)
 - [[1.0.7] - 2026-10-13](#107---2026-10-13)
 - [[1.0.6] - 2026-10-09](#106---2026-10-09)
@@ -19,6 +20,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-08-21](#100---2026-08-21)
 
 ## [Unreleased]
+
+### Security
+
+- `Notification::fromRequest()` and `RestResponse::fromHttp()` verify signatures with the merchant's configured `SignatureVersion` only; a different (attacker-supplied) `Ds_SignatureVersion` is rejected instead of selecting the verification algorithm (downgrade). **Behaviour change:** notifications whose `Ds_SignatureVersion` differs from `Merchant::signatureVersion()` now throw `RedsysException`; REST responses report `signatureValid = false`.
+- Secret key constructor parameters of `Merchant` and `Signer` are marked `#[\SensitiveParameter]` so they are hidden from stack traces.
+
+### Changed
+
+- `Version::VERSION` and `composer.json` `extra.nowo-package-version` set to `1.0.8` (were stuck at `1.0.6`); README release line updated.
 
 ## [1.0.7] - 2026-10-13
 

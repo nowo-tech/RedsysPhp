@@ -9,7 +9,7 @@ For **sandbox** FUC, terminal, signature key, URLs, and **test cards**, see [SAN
 | Setting | Class / API |
 |---------|-------------|
 | Environment | `Environment::Test` / `Environment::Live` |
-| Signature version | `SignatureVersion::HmacSha512V2` (default), `HmacSha512V1`, `HmacSha256V1` |
+| Signature version | `SignatureVersion::HmacSha512V2` (default), `HmacSha512V1`, `HmacSha256V1`. Must match the terminal: notifications / REST responses with another `Ds_SignatureVersion` are rejected. |
 | HTTP timeouts | `CurlHttpClient(connectTimeoutSeconds: 5, timeoutSeconds: 30)` |
 
 ## HTTP (REQ-RUNTIME-001)

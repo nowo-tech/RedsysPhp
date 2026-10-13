@@ -8,7 +8,6 @@ use Nowo\Redsys\Exception\RedsysException;
 use Nowo\Redsys\Http\HttpResponse;
 use Nowo\Redsys\Merchant;
 use Nowo\Redsys\MerchantParameters;
-use Nowo\Redsys\Signature\Signer;
 use Nowo\Redsys\SignatureVersion;
 
 /**
@@ -55,9 +54,10 @@ final readonly class RestResponse
                 throw new RedsysException('REST response missing order.');
             }
 
-            $version = SignatureVersion::from($versionRaw);
-            $valid = (new Signer($merchant->secretKey(), $version))
-                ->verify($encoded, $order, $signature);
+            // Verify with the merchant's configured algorithm only; a different (attacker-supplied)
+            // Ds_SignatureVersion is a downgrade attempt and never validates.
+            $valid = SignatureVersion::tryFrom($versionRaw) === $merchant->signatureVersion()
+                && $merchant->signer()->verify($encoded, $order, $signature);
 
             return new self($response->statusCode, $response->body, $fields, $valid, $errorCode);
         } catch (\Throwable) {
