@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## To 1.0.9
+
+From **1.0.8** — success check per transaction type (refunds, cancellations); doc fixes.
+
+```bash
+composer update nowo-tech/redsys-php
+```
+
 - New `Notification::isSuccessfulForTransactionType()` and `Notification::transactionType()`. `isAuthorized()` is unchanged (0000–0099). If you process refund (3), confirmation (2) or cancellation (9) notifications, switch to `isSuccessfulForTransactionType()`: Redsys reports their success as `0900` / `0400`, which `isAuthorized()` treats as failed.
 
 ## To 1.0.8
@@ -54,6 +62,7 @@ composer update nowo-tech/redsys-php
 
 ## Table of contents
 
+- [To 1.0.9](#to-109)
 - [To 1.0.8](#to-108)
 - [To 1.0.7](#to-107)
 - [To 1.0.6](#to-106)

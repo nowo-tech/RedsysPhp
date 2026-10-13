@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[Unreleased]](#unreleased)
   - [Security](#security)
   - [Changed](#changed)
+- [[1.0.9] - 2026-10-13](#109---2026-10-13)
 - [[1.0.8] - 2026-10-13](#108---2026-10-13)
 - [[1.0.7] - 2026-10-13](#107---2026-10-13)
 - [[1.0.6] - 2026-10-09](#106---2026-10-09)
@@ -22,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.9] - 2026-10-13
+
 ### Added
 
 - `Notification::isSuccessfulForTransactionType(?TransactionType $type = null)`: refunds and confirmations succeed with `Ds_Response` `0900`, cancellations with `0400`; other types use the `0000`–`0099` rule of `isAuthorized()`. `Notification::transactionType()` exposes `Ds_TransactionType`.
@@ -29,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Docs: "To 1.0.4" in UPGRADING no longer tells library users to run `cache:clear`; RELEASE.md uses a generic tag example; FRANKENPHP-WORKER-AUDIT.md audited revision updated to `v1.0.8`.
+
+[1.0.9]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.0.9
 
 ## [1.0.8] - 2026-10-13
 
