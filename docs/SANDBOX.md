@@ -4,6 +4,19 @@
 
 Official source: [Test cards and environments](https://pagosonline.redsys.es/desarrolladores-inicio/integrate-con-nosotros/tarjetas-y-entornos-de-prueba/) (Redsys TPVV developers).
 
+## Table of contents
+
+- [Environment](#environment)
+- [Generic credentials (no registration)](#generic-credentials-no-registration)
+  - [Own test merchant (portal)](#own-test-merchant-portal)
+- [Test cards](#test-cards)
+  - [General use](#general-use)
+  - [Other brands](#other-brands)
+  - [Specific EMV3DS cases](#specific-emv3ds-cases)
+  - [DCC (foreign currency)](#dcc-foreign-currency)
+  - [Denials and errors (CVV or amount)](#denials-and-errors-cvv-or-amount)
+- [Warnings](#warnings)
+
 ## Environment
 
 | Use | URL |

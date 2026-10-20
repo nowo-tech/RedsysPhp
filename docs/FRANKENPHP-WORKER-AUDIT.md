@@ -8,6 +8,18 @@
 | Method | Manual review of every file under `src/` plus the non-Composer `autoload.php` + PHPStan classic / **worker-strict** rulesets |
 | **Verdict** | ✅ **Viable** — immutable objects (`final readonly class`), no globals, no output; only a Low note on the default HTTP timeout |
 
+## Table of contents
+
+- [Execution model assumed](#execution-model-assumed)
+- [Summary](#summary)
+- [Services reviewed](#services-reviewed)
+- [Findings](#findings)
+  - [W-01 — Default cURL total timeout is 30 seconds (Low)](#w-01--default-curl-total-timeout-is-30-seconds-low)
+  - [W-02 — Notification input is an array, not superglobals (Info)](#w-02--notification-input-is-an-array-not-superglobals-info)
+  - [W-03 — Non-Composer autoloader is idempotent (Info)](#w-03--non-composer-autoloader-is-idempotent-info)
+- [Usage recommendations in worker mode](#usage-recommendations-in-worker-mode)
+- [Re-audit triggers](#re-audit-triggers)
+
 ## Execution model assumed
 
 FrankenPHP worker mode boots the Symfony kernel once per worker and serves many requests with the same container. This audit assumes the **strict** variant: the kernel is **not** rebooted between requests (`reset_kernel` false / equivalent), so every shared service, static property and PHP global survives from one request to the next. Two scenarios are evaluated:

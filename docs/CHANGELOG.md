@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Documentation: wave-1 REQ compliance — README section order (get-started before Documentation), Coverage badge and canonical FrankenPHP claim, English link texts, documentation list order (extras under Additional documentation), canonical issue templates (duplicates removed), full Spec Kit manual and spec-driven development guide, DEMO-FRANKENPHP dev/production start and troubleshooting, commented demo `.env.example`, demo compose project name `redsys-php-demo-symfony-8`, tables of contents on long docs.
+
 ## [1.0.10] - 2026-10-13
 
 ### Fixed

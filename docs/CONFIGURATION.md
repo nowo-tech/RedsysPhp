@@ -1,5 +1,12 @@
 # Configuration
 
+## Table of contents
+
+- [Merchant credentials](#merchant-credentials)
+- [HTTP (REQ-RUNTIME-001)](#http-req-runtime-001)
+- [FrankenPHP / workers](#frankenphp--workers)
+- [PSR (REQ-CS-007)](#psr-req-cs-007)
+
 ## Merchant credentials
 
 Provide FUC (`merchantCode`), terminal, and the **terminal signature key** from the Redsys admin portal. Prefer environment / secret store — never commit keys.

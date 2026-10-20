@@ -2,6 +2,12 @@
 
 PHPUnit Clover gate: **100% Lines** on `src/` (REQ-TEST-003).
 
+## Table of contents
+
+- [Include](#include)
+- [Gate](#gate)
+- [Justified ignores](#justified-ignores)
+
 ## Include
 
 `phpunit.xml.dist` `<source>` includes the entire `src/` tree (`Nowo\Redsys\`).

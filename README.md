@@ -1,6 +1,6 @@
 # Redsys PHP SDK (Nowo)
 
-[![CI](https://github.com/nowo-tech/RedsysPhp/actions/workflows/ci.yml/badge.svg)](https://github.com/nowo-tech/RedsysPhp/actions/workflows/ci.yml) [![Packagist Version](https://img.shields.io/packagist/v/nowo-tech/redsys-php.svg?style=flat)](https://packagist.org/packages/nowo-tech/redsys-php) [![Packagist Downloads](https://img.shields.io/packagist/dt/nowo-tech/redsys-php.svg)](https://packagist.org/packages/nowo-tech/redsys-php) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![PHP](https://img.shields.io/badge/PHP-8.3%2B-777BB4?logo=php)](https://php.net) [![GitHub stars](https://img.shields.io/github/stars/nowo-tech/RedsysPhp.svg?style=social&label=Star)](https://github.com/nowo-tech/RedsysPhp)
+[![CI](https://github.com/nowo-tech/RedsysPhp/actions/workflows/ci.yml/badge.svg)](https://github.com/nowo-tech/RedsysPhp/actions/workflows/ci.yml) [![Packagist Version](https://img.shields.io/packagist/v/nowo-tech/redsys-php.svg?style=flat)](https://packagist.org/packages/nowo-tech/redsys-php) [![Packagist Downloads](https://img.shields.io/packagist/dt/nowo-tech/redsys-php.svg)](https://packagist.org/packages/nowo-tech/redsys-php) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![PHP](https://img.shields.io/badge/PHP-8.3%2B-777BB4?logo=php)](https://php.net) [![GitHub stars](https://img.shields.io/github/stars/nowo-tech/RedsysPhp.svg?style=social&label=Star)](https://github.com/nowo-tech/RedsysPhp) [![Coverage](https://img.shields.io/badge/Coverage-100%25-brightgreen)](#tests-and-coverage)
 
 > ⭐ **Found this useful?** [Install from Packagist](https://packagist.org/packages/nowo-tech/redsys-php) · Give it a **star** on [GitHub](https://github.com/nowo-tech/RedsysPhp) so more developers can find it.
 
@@ -10,29 +10,19 @@ This is an **independent implementation** written from publicly documented algor
 
 ![FrankenPHP Friendly Worker Mode](docs/images/frankenphp-friendly.png)
 
-This library is **FrankenPHP worker mode friendly**: `RedirectForm` returns an HTML string and never calls `echo` or `exit`. Audited for worker with kernel **not** reset — see [docs/FRANKENPHP-WORKER-AUDIT.md](docs/FRANKENPHP-WORKER-AUDIT.md).
+This bundle is **FrankenPHP worker mode friendly**.
 
-## Documentation
+As a library it is safe in worker mode: `RedirectForm` returns an HTML string and never calls `echo` or `exit`. Audited for worker with kernel **not** reset — see [docs/FRANKENPHP-WORKER-AUDIT.md](docs/FRANKENPHP-WORKER-AUDIT.md).
 
-- [Installation](docs/INSTALLATION.md)
-- [Configuration](docs/CONFIGURATION.md)
-- [Sandbox: credenciales y tarjetas de prueba](docs/SANDBOX.md)
-- [PSR evaluation (REQ-CS-007)](docs/PSR.md)
-- [Usage](docs/USAGE.md)
-- [Contributing](docs/CONTRIBUTING.md)
-- [Changelog](docs/CHANGELOG.md)
-- [Upgrading](docs/UPGRADING.md)
-- [Release](docs/RELEASE.md)
-- [Security](docs/SECURITY.md)
-- [Engram](docs/ENGRAM.md)
-- [Spec-driven development](docs/SPEC-DRIVEN-DEVELOPMENT.md)
-- [Spec Kit](docs/SPEC-KIT.md)
-- [Coverage](docs/COVERAGE.md)
-- [GitHub CI](docs/GITHUB_CI.md)
-- [Branching](docs/BRANCHING.md)
-- [FrankenPHP demo](docs/DEMO-FRANKENPHP.md)
-- [FrankenPHP worker audit](docs/FRANKENPHP-WORKER-AUDIT.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
+## Installation
+
+```sh
+composer require nowo-tech/redsys-php:^1.0
+```
+
+```php
+require_once 'vendor/autoload.php';
+```
 
 ## Quick start
 
@@ -70,15 +60,37 @@ $html = RedirectForm::forMerchant($merchant, $params);
 
 PHP **8.3+** with extensions `curl`, `json`, `openssl`.
 
-## Installation
+## Develop
 
 ```sh
-composer require nowo-tech/redsys-php:^1.0
+make up && make install && make qa
+make setup-hooks
 ```
 
-```php
-require_once 'vendor/autoload.php';
-```
+## Documentation
+
+- [Installation](docs/INSTALLATION.md)
+- [Configuration](docs/CONFIGURATION.md)
+- [Usage](docs/USAGE.md)
+- [Contributing](docs/CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Changelog](docs/CHANGELOG.md)
+- [Upgrading](docs/UPGRADING.md)
+- [Release](docs/RELEASE.md)
+- [Security](docs/SECURITY.md)
+- [Engram](docs/ENGRAM.md)
+- [Spec-driven development](docs/SPEC-DRIVEN-DEVELOPMENT.md)
+- [GitHub Spec Kit](docs/SPEC-KIT.md)
+
+### Additional documentation
+
+- [Sandbox: test credentials and cards](docs/SANDBOX.md)
+- [PSR evaluation (REQ-CS-007)](docs/PSR.md)
+- [Coverage](docs/COVERAGE.md)
+- [GitHub CI](docs/GITHUB_CI.md)
+- [Branching](docs/BRANCHING.md)
+- [FrankenPHP demo](docs/DEMO-FRANKENPHP.md)
+- [FrankenPHP worker audit](docs/FRANKENPHP-WORKER-AUDIT.md)
 
 ## Tests and coverage
 
@@ -93,13 +105,6 @@ Clover gate: **≥ 99% Lines** on `src/` (see [docs/COVERAGE.md](docs/COVERAGE.m
 ```sh
 make qa
 make release-check
-```
-
-## Develop
-
-```sh
-make up && make install && make qa
-make setup-hooks
 ```
 
 ## License

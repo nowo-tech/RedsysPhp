@@ -11,6 +11,8 @@ make -C demo/symfony8 up
 
 This library is **FrankenPHP worker mode friendly**. Demos default to `FRANKENPHP_MODE=worker`. `RedirectForm` returns HTML only (no `echo`/`exit`).
 
+Development vs production start, `FRANKENPHP_MODE` and troubleshooting: [docs/DEMO-FRANKENPHP.md](../../docs/DEMO-FRANKENPHP.md).
+
 ## What the demo shows
 
 - Signed redirect payment form (`RedirectForm::forMerchant`)

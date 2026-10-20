@@ -4,6 +4,14 @@ Clean-room SDK. Namespace `Nowo\Redsys\`. Default signature: `HMAC_SHA512_V2`.
 
 Sandbox FUC / key / test cards: [SANDBOX.md](SANDBOX.md).
 
+## Table of contents
+
+- [Merchant](#merchant)
+- [Redirect payment](#redirect-payment)
+- [Notification](#notification)
+- [REST SIS](#rest-sis)
+- [Extra DS_MERCHANT_* fields](#extra-ds_merchant_-fields)
+
 ## Merchant
 
 ```php

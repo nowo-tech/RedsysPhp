@@ -1,4 +1,4 @@
-name: redsys-php-demo-symfony8
+name: redsys-php-demo-symfony-8
 
 services:
   php:

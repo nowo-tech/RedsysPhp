@@ -2,6 +2,17 @@
 
 Thank you for considering contributing to the Nowo Redsys PHP SDK fork.
 
+## Table of contents
+
+- [Code of Conduct](#code-of-conduct)
+- [Maintainer](#maintainer)
+- [Development setup](#development-setup)
+- [Pull requests](#pull-requests)
+- [Coding standards](#coding-standards)
+- [Cursor Agent](#cursor-agent)
+- [Igor worker audit (REQ-CS-008)](#igor-worker-audit-req-cs-008)
+- [AI co-author trailers](#ai-co-author-trailers)
+
 ## Code of Conduct
 
 This project follows the [Contributor Covenant Code of Conduct](../CODE_OF_CONDUCT.md).

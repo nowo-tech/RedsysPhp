@@ -1,5 +1,11 @@
 # Security
 
+## Table of contents
+
+- [Reporting](#reporting)
+- [Checklist (REQ-SEC-002)](#checklist-req-sec-002)
+- [Threat notes](#threat-notes)
+
 ## Reporting
 
 See [.github/SECURITY.md](../.github/SECURITY.md) for private disclosure.

@@ -1,5 +1,11 @@
 # Installation
 
+## Table of contents
+
+- [Composer (recommended)](#composer-recommended)
+- [Manual](#manual)
+- [Requirements](#requirements)
+
 ## Composer (recommended)
 
 ```sh
