@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.1.0] - 2026-10-22](#110---2026-10-22)
 - [[1.0.10] - 2026-10-13](#1010---2026-10-13)
 - [[1.0.9] - 2026-10-13](#109---2026-10-13)
 - [[1.0.8] - 2026-10-13](#108---2026-10-13)
@@ -21,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-08-21](#100---2026-08-21)
 
 ## [Unreleased]
+
+## [1.1.0] - 2026-10-22
+
+REQ wave 2: optional PSR-3 logging in RestClient, PSR-18 adapter, PHP <8.6 ceiling, demo Symfony Form, release gates. See [UPGRADING](UPGRADING.md#to-110).
 
 ### Added
 
@@ -39,6 +44,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Documentation
 
 - Documentation: wave-1 REQ compliance — README section order (get-started before Documentation), Coverage badge and canonical FrankenPHP claim, English link texts, documentation list order (extras under Additional documentation), canonical issue templates (duplicates removed), full Spec Kit manual and spec-driven development guide, DEMO-FRANKENPHP dev/production start and troubleshooting, commented demo `.env.example`, demo compose project name `redsys-php-demo-symfony-8`, tables of contents on long docs.
+
+[1.1.0]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.1.0
 
 ## [1.0.10] - 2026-10-13
 
