@@ -209,7 +209,7 @@ git ls-files src | wc -l
 
 The **Total production sources** row in `code-inventory.md` must match this count.
 
-In **RedsysPhp**, the baseline inventory covers **18/18** files — see [`specs/001-baseline/code-inventory.md`](../specs/001-baseline/code-inventory.md).
+In **RedsysPhp**, the baseline inventory covers **19/19** files — see [`specs/001-baseline/code-inventory.md`](../specs/001-baseline/code-inventory.md).
 
 ---
 

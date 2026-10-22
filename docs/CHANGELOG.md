@@ -22,8 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Http\Psr18HttpClient`: adapter to send REST calls through any PSR-18 client + PSR-17 factories (optional, `suggest`); the cURL client stays the default (REQ-CS-007).
+- `RestClient` accepts an optional PSR-3 logger and logs each REST outcome (action, HTTP status, signature validity, Redsys error code) or the exception class — never keys, card or order data; runtime dependency `psr/log` (REQ-OBS-001).
+
 ### Changed
 
+- `require.php` capped at `>=8.3 <8.6` (REQ-SF-001, REQ-PKG-004).
+- `release-check` in REQ-MAKE-002 order with `check-open-prs`, `check-no-raw-html-form`, `igor`, the demo release-check and `demo-smoke`; new `make demo-smoke` and `.github/workflows/demo-smoke.yml` (REQ-MAKE-002, REQ-CS-008, REQ-TEST-011).
+- Demo payment page renders `PaymentFormType` (amount / order, `symfony/form` added) instead of raw `<form>` / `<input>`; DNS override commented (REQ-DEMO-001, REQ-DEMO-009).
+- `docs/SECURITY.md`: attack surface, 12.4.1 checklist with the AI-audit row, logging and dependency sections; `.github/SECURITY.md` names the package correctly (clean-room client, not a fork) (REQ-SEC-001/002/003). README states the measured coverage (REQ-TEST-007).
+- Rector findings applied and capped at 2 parallel workers; `.scripts/check-no-cursor-coauthor.sh` accepts git worktrees (REQ-GIT-001).
 - Dependencies refreshed (Composer and pnpm/npm lock files of the bundle and its demos, campaign 2026-10-19).
 
 ### Documentation

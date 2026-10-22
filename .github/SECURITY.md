@@ -8,7 +8,7 @@
 
 ## Reporting a Vulnerability
 
-We take the security of Redsys PHP SDK (Nowo fork) seriously. If you believe you have found a security vulnerability, please report it to us as described below.
+We take the security of RedsysPhp (nowo-tech/redsys-php, a clean-room Redsys SIS client) seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
 ### How to Report
 

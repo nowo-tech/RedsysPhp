@@ -80,6 +80,8 @@ As an app on FrankenPHP worker mode (`reset_kernel` false / scenario B), I use s
 - **FR-006**: cURL client enforces connect and total timeouts.
 - **FR-007**: No proprietary PHPL_* sources in the repository.
 - **FR-008**: Library `src/` stays free of mutable/static request state; PHPStan FrankenPHP classic + worker-strict pass (see `docs/FRANKENPHP-WORKER-AUDIT.md`).
+- **FR-009**: `Psr18HttpClient` adapts any PSR-18 client + PSR-17 factories to the `HttpClient` port; transport errors become `RedsysException`.
+- **FR-010**: `RestClient` logs each REST outcome through an optional PSR-3 logger without keys, card, order data or bodies.
 
 ## Success Criteria
 

@@ -27,6 +27,7 @@ services:
       - REDSYS_SECRET_KEY=${REDSYS_SECRET_KEY:-sq7HjrUOBfKmC576ILgskD5srU870gJ7}
       - REDSYS_ENV=${REDSYS_ENV:-test}
       - DEFAULT_URI=${DEFAULT_URI:-http://localhost:8020}
+    # REQ-DEMO-009: public resolvers — Docker Desktop / WSL DNS sometimes fails to resolve repo.packagist.org (composer curl error 6).
     dns:
       - 8.8.8.8
       - 8.8.4.4

@@ -100,7 +100,7 @@ composer test
 composer test-coverage
 ```
 
-Clover gate: **≥ 99% Lines** on `src/` (see [docs/COVERAGE.md](docs/COVERAGE.md)).
+PHP: **100%** lines (278/278; Clover gate **≥ 99%**, see [docs/COVERAGE.md](docs/COVERAGE.md)). TS/JS: N/A. Python: N/A.
 
 ```sh
 make qa

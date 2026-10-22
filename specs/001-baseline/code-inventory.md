@@ -2,7 +2,7 @@
 
 Traceability for REQ-SPECKIT-003. All production units under `src/`.
 
-**Last audited:** 2026-09-24 (FrankenPHP worker scenario B; aligned with `spec.md` US-005 / FR-008).
+**Last audited:** 2026-10-22 (PSR-18 adapter + REST logging, FR-009 / FR-010; FrankenPHP worker scenario B, US-005 / FR-008).
 
 ## Core
 
@@ -34,7 +34,8 @@ Traceability for REQ-SPECKIT-003. All production units under `src/`.
 | HttpClient | `src/Http/HttpClient.php` | US-003 |
 | HttpResponse | `src/Http/HttpResponse.php` | US-003 |
 | CurlHttpClient | `src/Http/CurlHttpClient.php` | US-003, FR-006, FR-008 |
-| RestClient | `src/Rest/RestClient.php` | US-003, FR-005, FR-008 |
+| Psr18HttpClient | `src/Http/Psr18HttpClient.php` | US-003, FR-009 |
+| RestClient | `src/Rest/RestClient.php` | US-003, FR-005, FR-008, FR-010 |
 | RestResponse | `src/Rest/RestResponse.php` | US-003, FR-004 |
 
-**Total production PHP files**: 18
+**Total production PHP files**: 19

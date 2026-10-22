@@ -33,10 +33,11 @@
         "docs": "https://github.com/nowo-tech/RedsysPhp/blob/main/docs/USAGE.md"
     },
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.3 <8.6",
         "ext-curl": "*",
         "ext-json": "*",
-        "ext-openssl": "*"
+        "ext-openssl": "*",
+        "psr/log": "^2.0 || ^3.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.64",
@@ -44,7 +45,14 @@
         "nowo-tech/phpstan-frankenphp": "^1.1",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^11.5",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.0",
+        "psr/http-message": "^1.1 || ^2.0",
         "rector/rector": "^2.0"
+    },
+    "suggest": {
+        "psr/http-client": "Use Http\\Psr18HttpClient to send REST calls through your own PSR-18 client",
+        "psr/http-factory": "Request / stream factories for Http\\Psr18HttpClient"
     },
     "autoload": {
         "psr-4": {

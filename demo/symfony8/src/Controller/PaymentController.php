@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Form\PaymentFormType;
 use Nowo\Redsys\Currency;
 use Nowo\Redsys\Environment;
 use Nowo\Redsys\Merchant;
@@ -35,8 +36,13 @@ final class PaymentController extends AbstractController
     #[Route('/', name: 'home', methods: ['GET'])]
     public function home(): Response
     {
+        $form = $this->createForm(PaymentFormType::class, [
+            'amount' => '145',
+            'order'  => substr((string) time(), -10),
+        ], ['action' => $this->generateUrl('pay')]);
+
         return $this->render('payment/home.html.twig', [
-            'defaultOrder' => substr((string) time(), -10),
+            'form' => $form->createView(),
         ]);
     }
 

@@ -1,7 +1,8 @@
-# Makefile for Redsys PHP SDK (Nowo fork)
+# Makefile for RedsysPhp (nowo-tech/redsys-php)
 # REQ-MAKE-001 / REQ-MAKE-002 / REQ-MAKE-006 / REQ-MAKE-008 / REQ-MAKE-010
 
-.PHONY: help ensure-up up down down-dev build shell install assets test test-coverage cs-check cs-fix rector rector-dry phpstan igor qa release-check composer-sync clean update validate setup-hooks check-no-cursor-coauthor strip-cursor-coauthor-from-history
+.PHONY: help ensure-up up down down-dev build shell install assets test test-coverage cs-check cs-fix rector rector-dry phpstan igor qa release-check composer-sync clean update validate setup-hooks check-no-cursor-coauthor strip-cursor-coauthor-from-history \
+	check-open-prs check-no-raw-html-form demo-smoke
 
 COMPOSER_BIN := /usr/bin/composer
 COMPOSE := $(shell docker compose version >/dev/null 2>&1 && echo "docker compose" || echo "docker-compose")
@@ -27,7 +28,8 @@ help:
 	@echo "  phpstan       Run PHPStan static analysis"
 	@echo "  igor          Run Igor worker-state audit (REQ-CS-008)"
 	@echo "  qa            Run QA checks (cs-check + phpstan + test)"
-	@echo "  release-check Run full pre-release validation chain"
+	@echo "  release-check Full pre-release chain (REQ-MAKE-002): hygiene, open PRs, raw-form gate, QA, Igor, coverage, demo"
+	@echo "  demo-smoke    Boot demo/symfony8 and assert HTTP 200 (REQ-TEST-011)"
 	@echo "  setup-hooks   Install git hooks (REQ-GIT-001)"
 
 ensure-up:
@@ -99,15 +101,33 @@ composer-sync: ensure-up
 
 # Run Igor worker-state audit (REQ-CS-008)
 igor: ensure-up
-	$(COMPOSE) exec -T php composer igor
-release-check: check-no-cursor-coauthor
+	@$(COMPOSE) exec -T php composer igor
+
+check-open-prs:
+	@bash .scripts/check-open-prs.sh
+
+check-no-raw-html-form:
+	@bash .scripts/check-no-raw-html-form.sh
+
+# REQ-TEST-011: boot the demo and assert HTTP 200.
+demo-smoke:
+	@$(MAKE) -C demo demo-smoke
+
+# REQ-MAKE-002 order (plain library: no Twig of its own; the raw-form gate covers demo templates).
+release-check:
 	@$(MAKE) ensure-up
+	@$(MAKE) check-no-cursor-coauthor
+	@$(MAKE) check-open-prs
+	@$(MAKE) check-no-raw-html-form
 	@$(MAKE) composer-sync
 	@$(MAKE) cs-fix
 	@$(MAKE) cs-check
 	@$(MAKE) rector-dry
 	@$(MAKE) phpstan
+	@$(MAKE) igor
 	@$(MAKE) test-coverage
+	@$(MAKE) -C demo release-check
+	@$(MAKE) demo-smoke
 
 update: ensure-up
 	$(COMPOSE) exec -T php $(COMPOSER_BIN) update --no-interaction

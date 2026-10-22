@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class SignatureDowngradeTest extends TestCase
 {
-    private const SECRET = 'sq7HjrUOBfKmC576ILgskD5srU870gJ7';
+    private const string SECRET = 'sq7HjrUOBfKmC576ILgskD5srU870gJ7';
 
     public function testNotificationRejectsDowngradeToSha256(): void
     {
