@@ -23,6 +23,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Target 1.2.0 — typed errors (forged signature vs malformed payload vs transport), verified REST outcome helpers, explicit cURL TLS / redirect settings. See [UPGRADING](UPGRADING.md#to-120).
+
+### Security
+
+- A forged or downgraded notification signature threw the same `RedsysException` as a missing field or a network failure, so hosts could not tell a security event from a retryable error without parsing messages (DDD audit 2026-11-10, G1). It now throws `Exception\SignatureInvalidException`; malformed payloads throw `Exception\InvalidResponseException`; HTTP failures throw `Exception\TransportException`. All extend `RedsysException` (now non-final), so `catch (RedsysException)` keeps working.
+- `RestResponse` filled `$decodedParameters` with unverified fields and only flagged `signatureValid = false` (G2). New trusted view: `isSignatureValid()`, `assertSignatureValid()`, `verifiedParameters()` (null unless verified), `responseCode()`, `transactionType()`, `isAuthorized()`, `isSuccessfulForTransactionType()` — the `Notification` rules, on verified fields only. `$decodedParameters` is unchanged (documented as untrusted).
+- `CurlHttpClient` sets TLS peer / host verification, HTTPS-only protocols and no redirects explicitly instead of relying on libcurl / php.ini defaults, and refuses header names / values with CR, LF or NUL (G5). New `CurlHttpClient::securityOptions()`.
+
+### Changed
+
+- `Notification` outcome helpers share the internal `ResponseOutcome` with `RestResponse` (same results).
+- Docs: USAGE gains "Errors" and "Using it from a DDD / hexagonal application"; SECURITY checklist updated.
+
 ## [1.1.0] - 2026-10-22
 
 REQ wave 2: optional PSR-3 logging in RestClient, PSR-18 adapter, PHP <8.6 ceiling, demo Symfony Form, release gates. See [UPGRADING](UPGRADING.md#to-110).

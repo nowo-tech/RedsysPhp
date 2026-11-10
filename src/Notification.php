@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Nowo\Redsys;
 
-use Nowo\Redsys\Exception\RedsysException;
+use Nowo\Redsys\Exception\InvalidResponseException;
+use Nowo\Redsys\Exception\SignatureInvalidException;
 
 /**
  * Online notification / browser return payload verifier.
@@ -20,9 +21,14 @@ final readonly class Notification
     }
 
     /**
+     * Verifies the signature with the merchant's configured algorithm.
+     *
      * @param array<string, mixed> $input Redsys fields from the current request
      *                                    (Symfony: `$request->request->all()` / `$request->query->all()`;
      *                                    avoid `$_POST` / `$_GET` under FrankenPHP worker mode)
+     *
+     * @throws SignatureInvalidException the signature does not verify or Ds_SignatureVersion is not the merchant's
+     * @throws InvalidResponseException  a field is missing, the version is unknown or the payload cannot be decoded
      */
     public static function fromRequest(array $input, Merchant $merchant): self
     {
@@ -31,31 +37,31 @@ final readonly class Notification
         $versionRaw = $input['Ds_SignatureVersion'] ?? $merchant->signatureVersion()->value;
 
         if (!\is_string($encoded) || '' === $encoded) {
-            throw new RedsysException('Missing Ds_MerchantParameters.');
+            throw new InvalidResponseException('Missing Ds_MerchantParameters.');
         }
         if (!\is_string($signature) || '' === $signature) {
-            throw new RedsysException('Missing Ds_Signature.');
+            throw new InvalidResponseException('Missing Ds_Signature.');
         }
         if (!\is_string($versionRaw) || '' === $versionRaw) {
-            throw new RedsysException('Missing Ds_SignatureVersion.');
+            throw new InvalidResponseException('Missing Ds_SignatureVersion.');
         }
 
         $version = SignatureVersion::tryFrom($versionRaw);
         if (null === $version) {
-            throw new RedsysException(\sprintf('Unsupported Ds_SignatureVersion "%s".', $versionRaw));
+            throw new InvalidResponseException(\sprintf('Unsupported Ds_SignatureVersion "%s".', $versionRaw));
         }
 
         // The algorithm is the merchant's configured one: Ds_SignatureVersion is attacker-controlled,
         // so honouring it would allow a downgrade to a weaker scheme.
         if ($version !== $merchant->signatureVersion()) {
-            throw new RedsysException(\sprintf('Ds_SignatureVersion "%s" does not match the merchant signature version "%s".', $versionRaw, $merchant->signatureVersion()->value));
+            throw new SignatureInvalidException(\sprintf('Ds_SignatureVersion "%s" does not match the merchant signature version "%s".', $versionRaw, $merchant->signatureVersion()->value));
         }
 
         $decoded = MerchantParameters::decode($encoded);
         $order = self::extractOrder($decoded);
 
         if (!$merchant->signer()->verify($encoded, $order, $signature)) {
-            throw new RedsysException('Invalid Redsys notification signature.');
+            throw new SignatureInvalidException('Invalid Redsys notification signature.');
         }
 
         return new self($encoded, $signature, $version, $decoded);
@@ -86,10 +92,7 @@ final readonly class Notification
      */
     public function responseCode(): ?string
     {
-        $fields = $this->decoded->toArray();
-        $value = $fields['Ds_Response'] ?? $fields['DS_RESPONSE'] ?? null;
-
-        return \is_string($value) || \is_int($value) ? (string) $value : null;
+        return $this->outcome()->responseCode();
     }
 
     /**
@@ -97,13 +100,7 @@ final readonly class Notification
      */
     public function transactionType(): ?TransactionType
     {
-        $fields = $this->decoded->toArray();
-        $value = $fields['Ds_TransactionType'] ?? $fields['DS_TRANSACTIONTYPE'] ?? null;
-        if (!\is_string($value) && !\is_int($value)) {
-            return null;
-        }
-
-        return TransactionType::tryFrom((string) $value);
+        return $this->outcome()->transactionType();
     }
 
     /**
@@ -114,9 +111,7 @@ final readonly class Notification
      */
     public function isAuthorized(): bool
     {
-        $numeric = $this->numericResponseCode();
-
-        return null !== $numeric && $numeric >= 0 && $numeric <= 99;
+        return $this->outcome()->isAuthorized();
     }
 
     /**
@@ -130,23 +125,12 @@ final readonly class Notification
      */
     public function isSuccessfulForTransactionType(?TransactionType $type = null): bool
     {
-        $type ??= $this->transactionType();
-
-        return match ($type) {
-            TransactionType::Refund, TransactionType::Confirmation => 900 === $this->numericResponseCode(),
-            TransactionType::Cancellation => 400 === $this->numericResponseCode(),
-            default => $this->isAuthorized(),
-        };
+        return $this->outcome()->isSuccessfulForTransactionType($type);
     }
 
-    private function numericResponseCode(): ?int
+    private function outcome(): ResponseOutcome
     {
-        $code = $this->responseCode();
-        if (null === $code || !ctype_digit($code)) {
-            return null;
-        }
-
-        return (int) $code;
+        return new ResponseOutcome($this->decoded->toArray());
     }
 
     private static function extractOrder(MerchantParameters $parameters): string
@@ -154,7 +138,7 @@ final readonly class Notification
         $fields = $parameters->toArray();
         $order = $fields['Ds_Order'] ?? $fields['DS_ORDER'] ?? $fields['DS_MERCHANT_ORDER'] ?? null;
         if (!\is_string($order) || '' === $order) {
-            throw new RedsysException('Notification payload is missing Ds_Order.');
+            throw new InvalidResponseException('Notification payload is missing Ds_Order.');
         }
 
         return $order;

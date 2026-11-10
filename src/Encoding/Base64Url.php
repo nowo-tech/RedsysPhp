@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\Redsys\Encoding;
 
+use Nowo\Redsys\Exception\InvalidResponseException;
 use Nowo\Redsys\Exception\RedsysException;
 
 /**
@@ -28,7 +29,7 @@ final class Base64Url
 
         $decoded = base64_decode(strtr($data, '-_', '+/'), true);
         if (false === $decoded) {
-            throw new RedsysException('Invalid Base64URL payload.');
+            throw new InvalidResponseException('Invalid Base64URL payload.');
         }
 
         return $decoded;

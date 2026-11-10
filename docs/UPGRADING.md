@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 1.2.0](#to-120)
 - [To 1.1.0](#to-110)
 - [To 1.0.10](#to-1010)
 - [To 1.0.9](#to-109)
@@ -16,6 +17,20 @@
 - [To 1.0.0 (clean-room)](#to-100-clean-room)
 
 ## Unreleased
+
+## To 1.2.0
+
+From **1.1.x**:
+
+```bash
+composer update nowo-tech/redsys-php
+```
+
+No breaking change for code that catches `RedsysException` or reads `RestResponse::$signatureValid`.
+
+- **Exception subtypes.** `RedsysException` is no longer `final`; the library throws `SignatureInvalidException` (bad signature, signature version other than the merchant's), `InvalidResponseException` (missing field, unknown version, invalid Base64 / JSON) and `TransportException` (HTTP failure) — all subclasses of `RedsysException`. Messages are unchanged. Code that compares `$e::class === RedsysException::class` (or logs it and alerts on it) sees the subclass name now; `RestClient`'s error log records the subclass in `exception`.
+- **REST outcome.** Replace reads of `$response->decodedParameters['Ds_Response']` with `$response->assertSignatureValid()` + `$response->isAuthorized()` / `isSuccessfulForTransactionType()` / `verifiedParameters()`. `$decodedParameters` still holds unverified data on a failed signature: treat it as diagnostics only.
+- **cURL transport.** `CurlHttpClient` now refuses non-HTTPS URLs and redirects and always verifies TLS. The Redsys `Environment` URLs are HTTPS and do not redirect; a host that pointed the client at a plain-HTTP proxy or relied on `CURLOPT_FOLLOWLOCATION` from php.ini must use `Psr18HttpClient` with its own client. Header values with CR / LF / NUL throw `RedsysException`.
 
 ## To 1.1.0
 

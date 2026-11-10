@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\Redsys;
 
 use Nowo\Redsys\Encoding\Base64Url;
+use Nowo\Redsys\Exception\InvalidResponseException;
 use Nowo\Redsys\Exception\RedsysException;
 
 /**
@@ -140,7 +141,7 @@ final readonly class MerchantParameters implements \JsonSerializable
         $json = Base64Url::decode($encoded);
         $data = json_decode($json, true);
         if (!\is_array($data)) {
-            throw new RedsysException('Merchant parameters JSON is invalid.');
+            throw new InvalidResponseException('Merchant parameters JSON is invalid.');
         }
 
         /* @var array<string, mixed> $data */

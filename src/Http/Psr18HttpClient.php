@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\Redsys\Http;
 
-use Nowo\Redsys\Exception\RedsysException;
+use Nowo\Redsys\Exception\TransportException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -25,7 +25,7 @@ final readonly class Psr18HttpClient implements HttpClient
     }
 
     /**
-     * Sends the JSON body as a POST through the PSR-18 client; transport failures become {@see RedsysException}.
+     * Sends the JSON body as a POST through the PSR-18 client; transport failures become {@see TransportException}.
      *
      * @param array<string, string> $headers
      */
@@ -42,7 +42,7 @@ final readonly class Psr18HttpClient implements HttpClient
         try {
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
-            throw new RedsysException('Redsys HTTP request failed: '.$e->getMessage(), 0, $e);
+            throw new TransportException('Redsys HTTP request failed: '.$e->getMessage(), 0, $e);
         }
 
         return new HttpResponse(
