@@ -28,10 +28,10 @@ The library has no HTTP routes, no storage and no CLI of its own; the host owns 
 ## Checklist (REQ-SEC-002)
 
 1. Store the terminal signature key outside VCS.
-2. Always verify notification / REST signatures via `Notification::fromRequest` / `RestResponse::$signatureValid` before fulfilling orders.
+2. Always verify notification / REST signatures via `Notification::fromRequest` (throws `SignatureInvalidException`) / `RestResponse::isSignatureValid()` or `assertSignatureValid()` before fulfilling orders; read REST outcomes through `RestResponse::isAuthorized()` / `verifiedParameters()`, never through the raw `$decodedParameters` (filled even when the signature fails).
 3. Never log PAN, CVV, full notify bodies with card data, or the raw secret key.
 4. Use HTTPS endpoints only (`Environment` URLs are HTTPS).
-5. Keep cURL TLS peer verification enabled (default OpenSSL trust store).
+5. Keep TLS peer verification enabled: since 1.2.0 `CurlHttpClient` sets it explicitly (`VERIFYPEER`, `VERIFYHOST 2`), allows HTTPS only and follows no redirect (`CurlHttpClient::securityOptions()`); a wrapped PSR-18 client must be configured the same way.
 6. Use connect/request timeouts on REST (`CurlHttpClient` defaults 5s / 30s).
 7. Prefer `HMAC_SHA512_V2` unless the terminal requires another published version.
 8. Treat `Ds_Response` `0000`–`0099` as authorized only after signature OK.
@@ -59,7 +59,7 @@ The library has no HTTP routes, no storage and no CLI of its own; the host owns 
 ## Threat notes
 
 - Signature bypass → financial fraud: always `hash_equals` via `Signer::verify`.
-- Algorithm downgrade: `Ds_SignatureVersion` comes from the (untrusted) request. `Notification::fromRequest` and `RestResponse::fromHttp` always verify with the `Merchant`'s configured `SignatureVersion`; a different value is rejected (`RedsysException` / `signatureValid = false`).
+- Algorithm downgrade: `Ds_SignatureVersion` comes from the (untrusted) request. `Notification::fromRequest` and `RestResponse::fromHttp` always verify with the `Merchant`'s configured `SignatureVersion`; a different value is rejected (`SignatureInvalidException` / `signatureValid = false`).
 - Secret key in stack traces: `Merchant` and `Signer` constructors mark the key `#[\SensitiveParameter]`.
 - Key leak across workers: this SDK is instance-based (`Merchant` is `final readonly class`); no process-wide static credentials. See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
 

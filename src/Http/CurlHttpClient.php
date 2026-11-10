@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Nowo\Redsys\Http;
 
 use Nowo\Redsys\Exception\RedsysException;
+use Nowo\Redsys\Exception\TransportException;
 
 /**
- * cURL JSON POST with connect/request timeouts (REQ-RUNTIME-001).
+ * cURL JSON POST with connect/request timeouts (REQ-RUNTIME-001) and explicit transport hardening (since 1.2.0, not
+ * left to libcurl / php.ini defaults): TLS peer and host verification on, HTTPS only, no redirects, no CR/LF in header
+ * names or values. Failures of the call throw {@see TransportException}; a 3xx answer is returned as is (not followed).
  */
 final readonly class CurlHttpClient implements HttpClient
 {
@@ -19,17 +22,20 @@ final readonly class CurlHttpClient implements HttpClient
 
     public function postJson(string $url, string $jsonBody, array $headers = []): HttpResponse
     {
+        $headerLines = ['Content-Type: application/json', 'Accept: application/json'];
+        foreach ($headers as $name => $value) {
+            if (1 === preg_match('/[\r\n\0]/', $name.$value)) {
+                throw new RedsysException('HTTP header names and values must not contain CR, LF or NUL.');
+            }
+            $headerLines[] = $name.': '.$value;
+        }
+
         $ch = curl_init($url);
         // @codeCoverageIgnoreStart
         if (false === $ch) {
-            throw new RedsysException('Unable to initialize cURL.');
+            throw new TransportException('Unable to initialize cURL.');
         }
         // @codeCoverageIgnoreEnd
-
-        $headerLines = ['Content-Type: application/json', 'Accept: application/json'];
-        foreach ($headers as $name => $value) {
-            $headerLines[] = $name.': '.$value;
-        }
 
         curl_setopt_array($ch, [
             \CURLOPT_POST => true,
@@ -39,14 +45,12 @@ final readonly class CurlHttpClient implements HttpClient
             \CURLOPT_HTTPHEADER => $headerLines,
             \CURLOPT_CONNECTTIMEOUT => $this->connectTimeoutSeconds,
             \CURLOPT_TIMEOUT => $this->timeoutSeconds,
-        ]);
+        ] + self::securityOptions());
 
         $raw = curl_exec($ch);
-        // @codeCoverageIgnoreStart
         if (!\is_string($raw)) {
-            throw new RedsysException('Redsys HTTP request failed: '.curl_error($ch));
+            throw new TransportException('Redsys HTTP request failed: '.curl_error($ch));
         }
-        // @codeCoverageIgnoreEnd
 
         $status = curl_getinfo($ch, \CURLINFO_RESPONSE_CODE);
         $headerSize = curl_getinfo($ch, \CURLINFO_HEADER_SIZE);
@@ -55,6 +59,46 @@ final readonly class CurlHttpClient implements HttpClient
         $body = substr($raw, $headerSize);
 
         return new HttpResponse($status, $body, $this->parseHeaders($headerBlob));
+    }
+
+    /**
+     * The transport options set on every request: TLS verification, HTTPS only (also for redirects), no redirects.
+     *
+     * The scheme restriction uses `CURLOPT_PROTOCOLS_STR` / `CURLOPT_REDIR_PROTOCOLS_STR` when PHP defines them
+     * (libcurl ≥ 7.85 deprecates the bitmask options), and the `CURLOPT_PROTOCOLS` bitmask otherwise.
+     *
+     * @return array<int, int|bool|string>
+     */
+    public static function securityOptions(): array
+    {
+        return [
+            \CURLOPT_SSL_VERIFYPEER => true,
+            \CURLOPT_SSL_VERIFYHOST => 2,
+            \CURLOPT_FOLLOWLOCATION => false,
+            \CURLOPT_MAXREDIRS => 0,
+        ] + self::protocolOptions(\defined('CURLOPT_PROTOCOLS_STR') && \defined('CURLOPT_REDIR_PROTOCOLS_STR'));
+    }
+
+    /**
+     * HTTPS-only scheme restriction for the target and for redirects.
+     *
+     * @return array<int, int|string>
+     *
+     * @internal public for tests only
+     */
+    public static function protocolOptions(bool $useStringOptions): array
+    {
+        if ($useStringOptions) {
+            return [
+                \constant('CURLOPT_PROTOCOLS_STR') => 'https',
+                \constant('CURLOPT_REDIR_PROTOCOLS_STR') => 'https',
+            ];
+        }
+
+        return [
+            \CURLOPT_PROTOCOLS => \CURLPROTO_HTTPS,
+            \CURLOPT_REDIR_PROTOCOLS => \CURLPROTO_HTTPS,
+        ];
     }
 
     /** @return array<string, list<string>> */
