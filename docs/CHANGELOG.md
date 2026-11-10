@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.2.0] - 2026-11-10](#120---2026-11-10)
 - [[1.1.0] - 2026-10-22](#110---2026-10-22)
 - [[1.0.10] - 2026-10-13](#1010---2026-10-13)
 - [[1.0.9] - 2026-10-13](#109---2026-10-13)
@@ -23,7 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Target 1.2.0 — typed errors (forged signature vs malformed payload vs transport), verified REST outcome helpers, explicit cURL TLS / redirect settings. See [UPGRADING](UPGRADING.md#to-120).
+## [1.2.0] - 2026-11-10
+
+Typed errors (forged signature vs malformed payload vs transport), verified REST outcome helpers, explicit cURL TLS / redirect settings. See [UPGRADING](https://github.com/nowo-tech/RedsysPhp/blob/v1.2.0/docs/UPGRADING.md#to-120).
 
 ### Security
 
@@ -35,6 +38,8 @@ Target 1.2.0 — typed errors (forged signature vs malformed payload vs transpor
 
 - `Notification` outcome helpers share the internal `ResponseOutcome` with `RestResponse` (same results).
 - Docs: USAGE gains "Errors" and "Using it from a DDD / hexagonal application"; SECURITY checklist updated. The DDD example passes the transaction type you sent to `isSuccessfulForTransactionType()` (without it a signed refund `0900` or cancellation `0400` of the same order reads as successful) and compares order, amount, currency and merchant code with what you sent.
+
+[1.2.0]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.2.0
 
 ## [1.1.0] - 2026-10-22
 
