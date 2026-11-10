@@ -93,14 +93,33 @@ final class ErrorTypesAndRestOutcomeTest extends TestCase
 
     public function testTheCurlClientVerifiesTlsAndRefusesRedirects(): void
     {
+        $protocols = \defined('CURLOPT_PROTOCOLS_STR') && \defined('CURLOPT_REDIR_PROTOCOLS_STR')
+            ? [\constant('CURLOPT_PROTOCOLS_STR') => 'https', \constant('CURLOPT_REDIR_PROTOCOLS_STR') => 'https']
+            : [\CURLOPT_PROTOCOLS => \CURLPROTO_HTTPS, \CURLOPT_REDIR_PROTOCOLS => \CURLPROTO_HTTPS];
+
         self::assertSame([
             \CURLOPT_SSL_VERIFYPEER => true,
             \CURLOPT_SSL_VERIFYHOST => 2,
             \CURLOPT_FOLLOWLOCATION => false,
             \CURLOPT_MAXREDIRS => 0,
-            \CURLOPT_PROTOCOLS => \CURLPROTO_HTTPS,
-            \CURLOPT_REDIR_PROTOCOLS => \CURLPROTO_HTTPS,
-        ], CurlHttpClient::securityOptions());
+        ] + $protocols, CurlHttpClient::securityOptions());
+    }
+
+    public function testTheProtocolRestrictionUsesTheStringOptionsWhenAvailable(): void
+    {
+        self::assertSame(
+            [\CURLOPT_PROTOCOLS => \CURLPROTO_HTTPS, \CURLOPT_REDIR_PROTOCOLS => \CURLPROTO_HTTPS],
+            CurlHttpClient::protocolOptions(false),
+        );
+
+        if (!\defined('CURLOPT_PROTOCOLS_STR') || !\defined('CURLOPT_REDIR_PROTOCOLS_STR')) {
+            self::markTestSkipped('This PHP build does not define CURLOPT_PROTOCOLS_STR.');
+        }
+
+        self::assertSame(
+            [\constant('CURLOPT_PROTOCOLS_STR') => 'https', \constant('CURLOPT_REDIR_PROTOCOLS_STR') => 'https'],
+            CurlHttpClient::protocolOptions(true),
+        );
     }
 
     public function testAVerifiedRestResponseExposesItsOutcome(): void
