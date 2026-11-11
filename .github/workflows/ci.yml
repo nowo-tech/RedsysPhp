@@ -102,3 +102,25 @@ jobs:
 
       - name: Print global PHP coverage
         run: sh ./.scripts/php-coverage-percent.sh coverage-php.txt
+
+  igor:
+    name: Igor (FrankenPHP worker audit)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: curl, json, mbstring, hash, openssl
+          tools: composer:v2
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Igor worker-state audit (REQ-CS-008)
+        run: composer igor
