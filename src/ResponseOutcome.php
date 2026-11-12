@@ -65,6 +65,43 @@ final readonly class ResponseOutcome
         };
     }
 
+    /**
+     * Ds_Merchant_Identifier (any spelling): the card reference (token) Redsys returned, or null when absent, empty or
+     * ambiguous.
+     */
+    public function merchantIdentifier(): ?string
+    {
+        return $this->caseInsensitiveString('DS_MERCHANT_IDENTIFIER');
+    }
+
+    /**
+     * Ds_Merchant_Cof_Txnid (any spelling): the COF transaction id Redsys returned, or null when absent, empty or
+     * ambiguous.
+     */
+    public function cofTxnId(): ?string
+    {
+        return $this->caseInsensitiveString('DS_MERCHANT_COF_TXNID');
+    }
+
+    /**
+     * The value of the key whose upper-case form is $upperKey, matched over the verified fields ignoring case.
+     *
+     * Null when absent, when a value is not a non-empty string / integer, or when several spellings are present with
+     * different values (ambiguous: neither is trusted).
+     */
+    private function caseInsensitiveString(string $upperKey): ?string
+    {
+        $values = [];
+        foreach ($this->fields as $key => $value) {
+            if (strtoupper((string) $key) === $upperKey) {
+                $values[] = (\is_string($value) && '' !== $value) || \is_int($value) ? (string) $value : null;
+            }
+        }
+        $values = array_unique($values, \SORT_REGULAR);
+
+        return 1 === \count($values) ? $values[array_key_first($values)] : null;
+    }
+
     private function numericResponseCode(): ?int
     {
         $code = $this->responseCode();

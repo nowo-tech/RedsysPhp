@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 1.3.0](#to-130)
 - [To 1.2.0](#to-120)
 - [To 1.1.0](#to-110)
 - [To 1.0.10](#to-1010)
@@ -17,6 +18,21 @@
 - [To 1.0.0 (clean-room)](#to-100-clean-room)
 
 ## Unreleased
+
+## To 1.3.0
+
+From **1.2.x**:
+
+```bash
+composer update nowo-tech/redsys-php
+```
+
+No breaking change: new methods and enums only.
+
+- **COF / MIT helpers.** Code that sets `DS_MERCHANT_IDENTIFIER`, `DS_MERCHANT_COF_INI`, `DS_MERCHANT_COF_TYPE`, `DS_MERCHANT_EXCEP_SCA`, `DS_MERCHANT_DIRECTPAYMENT` or `DS_MERCHANT_COF_TXNID` with `with()` may switch to `identifier()`, `cofInit()`, `cofType()`, `excepSca()`, `directPayment()` and `cofTxnId()`: the encoded parameters (and so the signature) are identical. The helpers validate their input (throw `RedsysException`); `with()` still accepts anything. `directPayment('MOTO')` sends the documented lower-case `moto`.
+- **Reading the token.** Replace reads of `$response->decodedParameters['Ds_Merchant_Identifier']` / `['Ds_Merchant_Cof_Txnid']` (or of `Notification::parameters()->toArray()`) with `merchantIdentifier()` / `cofTxnId()` on `Notification` or `RestResponse`; on `RestResponse` they return null unless the signature verified.
+- **Debug output.** `var_dump()` / `print_r()` of `MerchantParameters`, `Notification` and `RestResponse` now redact the token and the COF txn id and shorten Base64 payloads / raw bodies to their length. Code that parsed that output (it should not) must use `toArray()` / `verifiedParameters()` instead. The redaction is `__debugInfo()` only: `json_encode()` / `jsonSerialize()`, `var_export()`, `serialize()`, `(array)` casts and the public `RestResponse::$rawBody` / `$decodedParameters` still carry the raw token and txn id, so do not log those.
+- **Case variants.** The new helpers replace any key that differs from theirs only in case (for example a `Ds_Merchant_Cof_Txnid` set with `with()`), and the readers match the response key ignoring case, returning null when two spellings disagree.
 
 ## To 1.2.0
 
