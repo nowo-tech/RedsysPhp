@@ -144,11 +144,11 @@ final class CofMitHelpersTest extends TestCase
         yield 'cofTxnId empty' => [static fn (MerchantParameters $p): MerchantParameters => $p->cofTxnId(''), 'DS_MERCHANT_COF_TXNID must be 1 to 15'];
         yield 'cofTxnId 16 chars' => [static fn (MerchantParameters $p): MerchantParameters => $p->cofTxnId(str_repeat('1', 16)), 'DS_MERCHANT_COF_TXNID must be 1 to 15'];
         yield 'cofTxnId dash' => [static fn (MerchantParameters $p): MerchantParameters => $p->cofTxnId('2006-031'), 'DS_MERCHANT_COF_TXNID must be 1 to 15'];
-        yield 'cofType unknown' => [static fn (MerchantParameters $p): MerchantParameters => $p->cofType('X'), 'Unknown DS_MERCHANT_COF_TYPE "X"'];
-        yield 'cofType lower' => [static fn (MerchantParameters $p): MerchantParameters => $p->cofType('r'), 'Unknown DS_MERCHANT_COF_TYPE "r"'];
-        yield 'excepSca unknown' => [static fn (MerchantParameters $p): MerchantParameters => $p->excepSca('Y'), 'Unknown DS_MERCHANT_EXCEP_SCA "Y"'];
-        yield 'excepSca control chars truncated' => [static fn (MerchantParameters $p): MerchantParameters => $p->excepSca("MIT\nINJECTED-LONG"), 'Unknown DS_MERCHANT_EXCEP_SCA "MIT?INJE"'];
-        yield 'directPayment unknown' => [static fn (MerchantParameters $p): MerchantParameters => $p->directPayment('yes'), 'Unknown DS_MERCHANT_DIRECTPAYMENT "yes"'];
+        yield 'cofType unknown' => [static fn (MerchantParameters $p): MerchantParameters => $p->cofType('X'), 'Unknown DS_MERCHANT_COF_TYPE (a value of 1 bytes).'];
+        yield 'cofType lower' => [static fn (MerchantParameters $p): MerchantParameters => $p->cofType('r'), 'Unknown DS_MERCHANT_COF_TYPE (a value of 1 bytes).'];
+        yield 'excepSca unknown' => [static fn (MerchantParameters $p): MerchantParameters => $p->excepSca('Y'), 'Unknown DS_MERCHANT_EXCEP_SCA (a value of 1 bytes).'];
+        yield 'excepSca control chars truncated' => [static fn (MerchantParameters $p): MerchantParameters => $p->excepSca("MIT\nINJECTED-LONG"), 'Unknown DS_MERCHANT_EXCEP_SCA (a value of 17 bytes).'];
+        yield 'directPayment unknown' => [static fn (MerchantParameters $p): MerchantParameters => $p->directPayment('yes'), 'Unknown DS_MERCHANT_DIRECTPAYMENT (a value of 3 bytes).'];
     }
 
     /**
@@ -161,6 +161,80 @@ final class CofMitHelpersTest extends TestCase
         $this->expectExceptionMessage($message);
 
         $helper($this->base());
+    }
+
+    public function testAnInvalidEnumValueIsNeverEchoed(): void
+    {
+        foreach ([
+            static fn (MerchantParameters $p): MerchantParameters => $p->cofType('secretX'),
+            static fn (MerchantParameters $p): MerchantParameters => $p->excepSca('secretX'),
+            static fn (MerchantParameters $p): MerchantParameters => $p->directPayment('secretX'),
+        ] as $helper) {
+            try {
+                $helper($this->base());
+                self::fail('Expected RedsysException.');
+            } catch (RedsysException $e) {
+                self::assertStringNotContainsString('secret', $e->getMessage());
+                self::assertStringContainsString('7 bytes', $e->getMessage());
+            }
+        }
+    }
+
+    public function testHelpersReplaceEveryCaseVariantOfTheirKey(): void
+    {
+        $params = $this->base()
+            ->with('Ds_Merchant_Cof_Txnid', 'A1')
+            ->with('ds_merchant_cof_txnid', 'A2')
+            ->cofTxnId('B1');
+        self::assertSame(['DS_MERCHANT_COF_TXNID' => 'B1'], array_filter(
+            $params->toArray(),
+            static fn (string $key): bool => 'DS_MERCHANT_COF_TXNID' === strtoupper($key),
+            \ARRAY_FILTER_USE_KEY
+        ));
+
+        $variants = [
+            'identifier' => [static fn (MerchantParameters $p): MerchantParameters => $p->identifier('B1'), 'Ds_Merchant_Identifier', 'DS_MERCHANT_IDENTIFIER', 'B1'],
+            'cofInit' => [static fn (MerchantParameters $p): MerchantParameters => $p->cofInit(false), 'Ds_Merchant_Cof_Ini', 'DS_MERCHANT_COF_INI', 'N'],
+            'cofType' => [static fn (MerchantParameters $p): MerchantParameters => $p->cofType(CofType::Installments), 'Ds_Merchant_Cof_Type', 'DS_MERCHANT_COF_TYPE', 'I'],
+            'excepSca' => [static fn (MerchantParameters $p): MerchantParameters => $p->excepSca(ScaExemption::LowValue), 'Ds_Merchant_Excep_Sca', 'DS_MERCHANT_EXCEP_SCA', 'LWV'],
+            'directPayment' => [static fn (MerchantParameters $p): MerchantParameters => $p->directPayment(DirectPayment::Moto), 'Ds_Merchant_DirectPayment', 'DS_MERCHANT_DIRECTPAYMENT', 'moto'],
+        ];
+        foreach ($variants as $name => [$helper, $mixed, $upper, $expected]) {
+            $fields = $helper($this->base()->with($mixed, 'OLD'))->toArray();
+            self::assertArrayNotHasKey($mixed, $fields, $name);
+            self::assertSame($expected, $fields[$upper], $name);
+            self::assertSame($this->base()->toArray() + [$upper => $expected], $fields, $name);
+        }
+    }
+
+    public function testDirectPaymentFalseRemovesEveryCaseVariant(): void
+    {
+        $params = $this->base()->with('Ds_Merchant_DirectPayment', 'true')->with('DS_MERCHANT_DIRECTPAYMENT', 'true');
+
+        self::assertSame($this->base()->toArray(), $params->directPayment(false)->toArray());
+    }
+
+    public function testReadersReturnNullWhenTwoSpellingsDisagree(): void
+    {
+        $conflict = Notification::fromRequest($this->signed([
+            'Ds_Order' => '1234',
+            'Ds_Merchant_Identifier' => self::TOKEN,
+            'DS_MERCHANT_IDENTIFIER' => 'OTHER',
+            'Ds_Merchant_Cof_Txnid' => self::TXN_ID,
+            'ds_merchant_cof_txnid' => '',
+        ]), $this->merchant);
+        self::assertNull($conflict->merchantIdentifier());
+        self::assertNull($conflict->cofTxnId());
+
+        $agree = $this->rest([
+            'Ds_Order' => '1234',
+            'Ds_Merchant_Identifier' => self::TOKEN,
+            'ds_merchant_identifier' => self::TOKEN,
+            'Ds_Merchant_Cof_Txnid' => self::TXN_ID,
+            'DS_MERCHANT_COF_TXNID' => (int) self::TXN_ID,
+        ], true);
+        self::assertSame(self::TOKEN, $agree->merchantIdentifier());
+        self::assertSame(self::TXN_ID, $agree->cofTxnId());
     }
 
     public function testAnInvalidTokenIsNeverInTheMessage(): void

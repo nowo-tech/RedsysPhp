@@ -27,6 +27,9 @@ use Nowo\Redsys\TransactionType;
 final readonly class RestResponse
 {
     /**
+     * Use {@see fromHttp()} (or {@see RestClient}): the constructor does not verify the signature, it trusts the
+     * $signatureValid it is given.
+     *
      * @param array<string, mixed>|null $decodedParameters UNTRUSTED unless $signatureValid (see the class doc)
      */
     public function __construct(

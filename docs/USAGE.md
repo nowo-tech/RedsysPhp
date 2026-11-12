@@ -123,7 +123,9 @@ if ($response->isSuccessfulForTransactionType(TransactionType::Authorization)) {
 }
 ```
 
-`Notification::merchantIdentifier()` / `cofTxnId()` and `RestResponse::merchantIdentifier()` / `cofTxnId()` read `Ds_Merchant_Identifier` / `Ds_Merchant_Cof_Txnid` (and their upper-case spellings) from verified fields only; never take them from `RestResponse::$decodedParameters`. `var_dump()` / `print_r()` of `MerchantParameters`, `Notification` and `RestResponse` show both values as `[redacted]`, and `RestClient` never logs them. Redsys reference: [tokenización MIT](https://pagosonline.redsys.es/desarrolladores-inicio/documentacion-funcionalidades-avanzadas/tokenizacion/tokenizacion-mit/) and [parámetros de entrada y salida](https://pagosonline.redsys.es/desarrolladores-inicio/integrate-con-nosotros/parametros-de-entrada-y-salida/).
+`Notification::merchantIdentifier()` / `cofTxnId()` and `RestResponse::merchantIdentifier()` / `cofTxnId()` read `Ds_Merchant_Identifier` / `Ds_Merchant_Cof_Txnid` (matched ignoring case) from verified fields only, and return null when two spellings carry different values; never take them from `RestResponse::$decodedParameters`. Each helper first removes any key that differs from its own only in case (a `with('Ds_Merchant_Cof_Txnid', …)` set earlier is replaced, not sent next to it); `with()` itself is unchanged.
+
+**Redaction covers `var_dump()` / `print_r()` only** (`__debugInfo()`): those show the token and the txn id as `[redacted]`. `json_encode()` / `jsonSerialize()`, `var_export()`, `serialize()`, `(array)` casts, `toArray()`, `encode()` and the public `RestResponse::$rawBody` / `$decodedParameters` still carry the raw values: never log or dump those. `RestClient` never logs them. Redsys reference: [tokenización MIT](https://pagosonline.redsys.es/desarrolladores-inicio/documentacion-funcionalidades-avanzadas/tokenizacion/tokenizacion-mit/) and [parámetros de entrada y salida](https://pagosonline.redsys.es/desarrolladores-inicio/integrate-con-nosotros/parametros-de-entrada-y-salida/).
 
 ## Extra DS_MERCHANT_* fields
 

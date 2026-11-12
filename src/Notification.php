@@ -12,6 +12,10 @@ use Nowo\Redsys\Exception\SignatureInvalidException;
  */
 final readonly class Notification
 {
+    /**
+     * Use {@see fromRequest()}: the constructor does not verify the signature, so an instance built with it carries
+     * unverified fields and none of its getters can be trusted.
+     */
     public function __construct(
         private string $encodedParameters,
         private string $signature,

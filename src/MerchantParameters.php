@@ -116,7 +116,7 @@ final readonly class MerchantParameters implements \JsonSerializable
             throw new RedsysException('DS_MERCHANT_IDENTIFIER must be 1 to 40 ASCII letters or digits.');
         }
 
-        return $this->with('DS_MERCHANT_IDENTIFIER', $value);
+        return $this->withField('DS_MERCHANT_IDENTIFIER', $value);
     }
 
     /**
@@ -125,7 +125,7 @@ final readonly class MerchantParameters implements \JsonSerializable
      */
     public function cofInit(bool $init = true): self
     {
-        return $this->with('DS_MERCHANT_COF_INI', $init ? 'S' : 'N');
+        return $this->withField('DS_MERCHANT_COF_INI', $init ? 'S' : 'N');
     }
 
     /**
@@ -137,10 +137,10 @@ final readonly class MerchantParameters implements \JsonSerializable
     {
         if (\is_string($type)) {
             $type = CofType::tryFrom($type)
-                ?? throw new RedsysException(\sprintf('Unknown DS_MERCHANT_COF_TYPE "%s".', $this->printable($type)));
+                ?? throw new RedsysException(\sprintf('Unknown DS_MERCHANT_COF_TYPE (a value of %d bytes).', \strlen($type)));
         }
 
-        return $this->with('DS_MERCHANT_COF_TYPE', $type->value);
+        return $this->withField('DS_MERCHANT_COF_TYPE', $type->value);
     }
 
     /**
@@ -152,10 +152,10 @@ final readonly class MerchantParameters implements \JsonSerializable
     {
         if (\is_string($exemption)) {
             $exemption = ScaExemption::tryFrom($exemption)
-                ?? throw new RedsysException(\sprintf('Unknown DS_MERCHANT_EXCEP_SCA "%s".', $this->printable($exemption)));
+                ?? throw new RedsysException(\sprintf('Unknown DS_MERCHANT_EXCEP_SCA (a value of %d bytes).', \strlen($exemption)));
         }
 
-        return $this->with('DS_MERCHANT_EXCEP_SCA', $exemption->value);
+        return $this->withField('DS_MERCHANT_EXCEP_SCA', $exemption->value);
     }
 
     /**
@@ -168,19 +168,16 @@ final readonly class MerchantParameters implements \JsonSerializable
     public function directPayment(bool|DirectPayment|string $mode = true): self
     {
         if (false === $mode) {
-            $fields = $this->fields;
-            unset($fields['DS_MERCHANT_DIRECTPAYMENT']);
-
-            return new self($fields);
+            return new self($this->fieldsWithout('DS_MERCHANT_DIRECTPAYMENT'));
         }
         if (true === $mode) {
             $mode = DirectPayment::WithoutAuthentication;
         } elseif (\is_string($mode)) {
             $mode = DirectPayment::tryFrom(strtolower($mode))
-                ?? throw new RedsysException(\sprintf('Unknown DS_MERCHANT_DIRECTPAYMENT "%s".', $this->printable($mode)));
+                ?? throw new RedsysException(\sprintf('Unknown DS_MERCHANT_DIRECTPAYMENT (a value of %d bytes).', \strlen($mode)));
         }
 
-        return $this->with('DS_MERCHANT_DIRECTPAYMENT', $mode->value);
+        return $this->withField('DS_MERCHANT_DIRECTPAYMENT', $mode->value);
     }
 
     /**
@@ -195,7 +192,7 @@ final readonly class MerchantParameters implements \JsonSerializable
             throw new RedsysException('DS_MERCHANT_COF_TXNID must be 1 to 15 ASCII letters or digits.');
         }
 
-        return $this->with('DS_MERCHANT_COF_TXNID', $txnId);
+        return $this->withField('DS_MERCHANT_COF_TXNID', $txnId);
     }
 
     /**
@@ -269,10 +266,29 @@ final readonly class MerchantParameters implements \JsonSerializable
     }
 
     /**
-     * An invalid enum value for an error message: at most 8 printable ASCII characters.
+     * Writes a field after removing every existing key that differs only in case, so a value set earlier with another
+     * spelling (Ds_Merchant_Cof_Txnid, DS_MERCHANT_COF_TXNID, …) cannot travel next to the typed one.
      */
-    private function printable(string $value): string
+    private function withField(string $key, string $value): self
     {
-        return substr((string) preg_replace('/[^\x20-\x7E]/', '?', $value), 0, 8);
+        $fields = $this->fieldsWithout($key);
+        $fields[$key] = $value;
+
+        return new self($fields);
+    }
+
+    /**
+     * @return array<string, mixed> the fields without any key equal to $key ignoring case
+     */
+    private function fieldsWithout(string $key): array
+    {
+        $fields = $this->fields;
+        foreach (array_keys($fields) as $existing) {
+            if (strtoupper((string) $existing) === $key) {
+                unset($fields[$existing]);
+            }
+        }
+
+        return $fields;
     }
 }

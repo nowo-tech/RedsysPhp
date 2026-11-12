@@ -35,12 +35,12 @@ Typed helpers for credential-on-file (COF) and merchant-initiated (MIT) payments
   - `excepSca(ScaExemption|string)` → `DS_MERCHANT_EXCEP_SCA` (new `ScaExemption` enum: MIT, LWV, TRA, COR, ATD);
   - `directPayment(bool|DirectPayment|string = true)` → `DS_MERCHANT_DIRECTPAYMENT` `true` / `moto` (new `DirectPayment` enum; `false` removes the field);
   - `cofTxnId(string)` → `DS_MERCHANT_COF_TXNID` (1–15 ASCII letters / digits).
-  Invalid values throw `RedsysException`; the token and the txn id are `#[\SensitiveParameter]` and never part of the message. Enum values come from the Redsys "Parámetros de entrada y salida" table (cited in each enum).
-- `Notification::merchantIdentifier()` / `cofTxnId()` and `RestResponse::merchantIdentifier()` / `cofTxnId()`: `Ds_Merchant_Identifier` and `Ds_Merchant_Cof_Txnid` from verified fields only (`RestResponse` returns null when the signature did not verify; `$decodedParameters` stays untrusted).
+  Each helper first removes every existing key that differs from its own only in case (so `with('Ds_Merchant_Cof_Txnid', $a)->cofTxnId($b)` sends only `$b`); `directPayment(false)` removes every case variant. `with()` is unchanged. Invalid values throw `RedsysException`; the message never echoes the value (only its length for enum fields), and the token and the txn id are `#[\SensitiveParameter]`. Enum values come from the Redsys "Parámetros de entrada y salida" table (cited in each enum).
+- `Notification::merchantIdentifier()` / `cofTxnId()` and `RestResponse::merchantIdentifier()` / `cofTxnId()`: `Ds_Merchant_Identifier` and `Ds_Merchant_Cof_Txnid` from verified fields only, keys matched ignoring case, null when two spellings carry different values (`RestResponse` returns null when the signature did not verify; `$decodedParameters` stays untrusted). The `Notification` / `RestResponse` constructors now document that they do not verify anything: use `fromRequest()` / `fromHttp()` / `RestClient`.
 
 ### Security
 
-- `MerchantParameters`, `Notification` and `RestResponse` define `__debugInfo()`: `var_dump()` / `print_r()` show the card reference and the COF txn id as `[redacted]` (the `REQUIRED` marker stays visible) and Base64 payloads / raw bodies as their length. `toArray()`, `encode()`, the public properties and the getters keep the real values. `RestClient` logs never contained them (now covered by a test).
+- `MerchantParameters`, `Notification` and `RestResponse` define `__debugInfo()`: `var_dump()` / `print_r()` show the card reference and the COF txn id as `[redacted]` (the `REQUIRED` marker stays visible) and Base64 payloads / raw bodies as their length. `toArray()`, `encode()`, the public properties and the getters keep the real values. `RestClient` logs never contained them (now covered by a test). The redaction is `__debugInfo()` only: `json_encode()`, `var_export()`, `serialize()`, `(array)` and the public `$rawBody` / `$decodedParameters` still carry the raw values.
 
 ## [1.2.0] - 2026-11-10
 
