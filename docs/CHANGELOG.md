@@ -24,6 +24,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Typed helpers for credential-on-file (COF) and merchant-initiated (MIT) payments. Requested by Beacon; `MerchantParameters::with()` keeps working unchanged. See [UPGRADING](UPGRADING.md#to-130).
+
+### Added
+
+- `MerchantParameters` COF / MIT helpers, each encoding exactly like the raw `with('DS_MERCHANT_…', $value)` (equivalence tests in `CofMitHelpersTest`):
+  - `identifier(string)` → `DS_MERCHANT_IDENTIFIER` (`MerchantParameters::IDENTIFIER_REQUIRED` = `REQUIRED` to request a card reference, or a stored reference; 1–40 ASCII letters / digits, a lower-case `required` is refused);
+  - `cofInit(bool = true)` → `DS_MERCHANT_COF_INI` `S` / `N`;
+  - `cofType(CofType|string)` → `DS_MERCHANT_COF_TYPE` (new `CofType` enum: I, R, H, E, D, M, N, C);
+  - `excepSca(ScaExemption|string)` → `DS_MERCHANT_EXCEP_SCA` (new `ScaExemption` enum: MIT, LWV, TRA, COR, ATD);
+  - `directPayment(bool|DirectPayment|string = true)` → `DS_MERCHANT_DIRECTPAYMENT` `true` / `moto` (new `DirectPayment` enum; `false` removes the field);
+  - `cofTxnId(string)` → `DS_MERCHANT_COF_TXNID` (1–15 ASCII letters / digits).
+  Invalid values throw `RedsysException`; the token and the txn id are `#[\SensitiveParameter]` and never part of the message. Enum values come from the Redsys "Parámetros de entrada y salida" table (cited in each enum).
+- `Notification::merchantIdentifier()` / `cofTxnId()` and `RestResponse::merchantIdentifier()` / `cofTxnId()`: `Ds_Merchant_Identifier` and `Ds_Merchant_Cof_Txnid` from verified fields only (`RestResponse` returns null when the signature did not verify; `$decodedParameters` stays untrusted).
+
+### Security
+
+- `MerchantParameters`, `Notification` and `RestResponse` define `__debugInfo()`: `var_dump()` / `print_r()` show the card reference and the COF txn id as `[redacted]` (the `REQUIRED` marker stays visible) and Base64 payloads / raw bodies as their length. `toArray()`, `encode()`, the public properties and the getters keep the real values. `RestClient` logs never contained them (now covered by a test).
+
 ## [1.2.0] - 2026-11-10
 
 Typed errors (forged signature vs malformed payload vs transport), verified REST outcome helpers, explicit cURL TLS / redirect settings. See [UPGRADING](https://github.com/nowo-tech/RedsysPhp/blob/v1.2.0/docs/UPGRADING.md#to-120).

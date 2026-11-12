@@ -15,6 +15,9 @@ use Nowo\Redsys\Exception\RedsysException;
  */
 final readonly class MerchantParameters implements \JsonSerializable
 {
+    /** DS_MERCHANT_IDENTIFIER value that asks Redsys to store the card and return a reference (token). */
+    public const string IDENTIFIER_REQUIRED = 'REQUIRED';
+
     /** @param array<string, mixed> $fields */
     public function __construct(
         private array $fields = [],
@@ -96,6 +99,106 @@ final readonly class MerchantParameters implements \JsonSerializable
     }
 
     /**
+     * DS_MERCHANT_IDENTIFIER: {@see IDENTIFIER_REQUIRED} to ask Redsys for a card reference (token), or a reference it
+     * returned earlier ({@see Notification::merchantIdentifier()}, {@see Rest\RestResponse::merchantIdentifier()}).
+     *
+     * Redsys documents the field as up to 40 characters (its references are 40 hexadecimal characters); this accepts 1
+     * to 40 ASCII letters or digits. A lower- or mixed-case "required" is refused instead of being sent as a reference.
+     *
+     * @throws RedsysException the value is empty, too long or has other characters (the value is never in the message)
+     */
+    public function identifier(#[\SensitiveParameter] string $value): self
+    {
+        if (self::IDENTIFIER_REQUIRED !== $value && 0 === strcasecmp($value, self::IDENTIFIER_REQUIRED)) {
+            throw new RedsysException(\sprintf('DS_MERCHANT_IDENTIFIER must be "%s" in upper case to request a reference.', self::IDENTIFIER_REQUIRED));
+        }
+        if (1 !== preg_match('/\A[A-Za-z0-9]{1,40}\z/', $value)) {
+            throw new RedsysException('DS_MERCHANT_IDENTIFIER must be 1 to 40 ASCII letters or digits.');
+        }
+
+        return $this->with('DS_MERCHANT_IDENTIFIER', $value);
+    }
+
+    /**
+     * DS_MERCHANT_COF_INI: "S" on the first credential-on-file operation (the one that stores the credentials), "N"
+     * otherwise.
+     */
+    public function cofInit(bool $init = true): self
+    {
+        return $this->with('DS_MERCHANT_COF_INI', $init ? 'S' : 'N');
+    }
+
+    /**
+     * DS_MERCHANT_COF_TYPE: the kind of COF operation (R recurring, I installments, …).
+     *
+     * @throws RedsysException the string is not a {@see CofType} value
+     */
+    public function cofType(CofType|string $type): self
+    {
+        if (\is_string($type)) {
+            $type = CofType::tryFrom($type)
+                ?? throw new RedsysException(\sprintf('Unknown DS_MERCHANT_COF_TYPE "%s".', $this->printable($type)));
+        }
+
+        return $this->with('DS_MERCHANT_COF_TYPE', $type->value);
+    }
+
+    /**
+     * DS_MERCHANT_EXCEP_SCA: the PSD2 exemption requested (MIT for merchant-initiated charges on stored credentials).
+     *
+     * @throws RedsysException the string is not a {@see ScaExemption} value
+     */
+    public function excepSca(ScaExemption|string $exemption): self
+    {
+        if (\is_string($exemption)) {
+            $exemption = ScaExemption::tryFrom($exemption)
+                ?? throw new RedsysException(\sprintf('Unknown DS_MERCHANT_EXCEP_SCA "%s".', $this->printable($exemption)));
+        }
+
+        return $this->with('DS_MERCHANT_EXCEP_SCA', $exemption->value);
+    }
+
+    /**
+     * DS_MERCHANT_DIRECTPAYMENT: true (or {@see DirectPayment::WithoutAuthentication}) sends "true", {@see
+     * DirectPayment::Moto} sends "moto"; a string is matched case-insensitively against those two values and sent in
+     * the documented lower case. false removes the field.
+     *
+     * @throws RedsysException the string is neither "true" nor "moto"
+     */
+    public function directPayment(bool|DirectPayment|string $mode = true): self
+    {
+        if (false === $mode) {
+            $fields = $this->fields;
+            unset($fields['DS_MERCHANT_DIRECTPAYMENT']);
+
+            return new self($fields);
+        }
+        if (true === $mode) {
+            $mode = DirectPayment::WithoutAuthentication;
+        } elseif (\is_string($mode)) {
+            $mode = DirectPayment::tryFrom(strtolower($mode))
+                ?? throw new RedsysException(\sprintf('Unknown DS_MERCHANT_DIRECTPAYMENT "%s".', $this->printable($mode)));
+        }
+
+        return $this->with('DS_MERCHANT_DIRECTPAYMENT', $mode->value);
+    }
+
+    /**
+     * DS_MERCHANT_COF_TXNID: the id Redsys returned on the first COF operation ({@see Notification::cofTxnId()},
+     * {@see Rest\RestResponse::cofTxnId()}). Redsys documents it as up to 15 alphanumeric characters.
+     *
+     * @throws RedsysException the value is empty, longer than 15 or not ASCII letters / digits (never in the message)
+     */
+    public function cofTxnId(#[\SensitiveParameter] string $txnId): self
+    {
+        if (1 !== preg_match('/\A[A-Za-z0-9]{1,15}\z/', $txnId)) {
+            throw new RedsysException('DS_MERCHANT_COF_TXNID must be 1 to 15 ASCII letters or digits.');
+        }
+
+        return $this->with('DS_MERCHANT_COF_TXNID', $txnId);
+    }
+
+    /**
      * Apply merchant identity fields from credentials (code + terminal).
      */
     public function forMerchant(Merchant $merchant): self
@@ -152,5 +255,24 @@ final readonly class MerchantParameters implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->fields;
+    }
+
+    /**
+     * var_dump() / print_r() view: the card reference (except "REQUIRED") and the COF transaction id are redacted, in
+     * request (DS_MERCHANT_*) and response (Ds_Merchant_*) casing alike. {@see toArray()} and {@see encode()} keep them.
+     *
+     * @return array{fields: array<array-key, mixed>}
+     */
+    public function __debugInfo(): array
+    {
+        return ['fields' => Redaction::fields($this->fields)];
+    }
+
+    /**
+     * An invalid enum value for an error message: at most 8 printable ASCII characters.
+     */
+    private function printable(string $value): string
+    {
+        return substr((string) preg_replace('/[^\x20-\x7E]/', '?', $value), 0, 8);
     }
 }

@@ -65,6 +65,34 @@ final readonly class ResponseOutcome
         };
     }
 
+    /**
+     * Ds_Merchant_Identifier: the card reference (token) Redsys returned, or null when absent / empty.
+     */
+    public function merchantIdentifier(): ?string
+    {
+        return $this->firstString('Ds_Merchant_Identifier', 'DS_MERCHANT_IDENTIFIER');
+    }
+
+    /**
+     * Ds_Merchant_Cof_Txnid: the COF transaction id Redsys returned, or null when absent / empty.
+     */
+    public function cofTxnId(): ?string
+    {
+        return $this->firstString('Ds_Merchant_Cof_Txnid', 'DS_MERCHANT_COF_TXNID', 'Ds_Merchant_COF_TXNID');
+    }
+
+    private function firstString(string ...$keys): ?string
+    {
+        foreach ($keys as $key) {
+            $value = $this->fields[$key] ?? null;
+            if ((\is_string($value) && '' !== $value) || \is_int($value)) {
+                return (string) $value;
+            }
+        }
+
+        return null;
+    }
+
     private function numericResponseCode(): ?int
     {
         $code = $this->responseCode();

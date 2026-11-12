@@ -9,6 +9,7 @@ use Nowo\Redsys\Exception\SignatureInvalidException;
 use Nowo\Redsys\Http\HttpResponse;
 use Nowo\Redsys\Merchant;
 use Nowo\Redsys\MerchantParameters;
+use Nowo\Redsys\Redaction;
 use Nowo\Redsys\ResponseOutcome;
 use Nowo\Redsys\SignatureVersion;
 use Nowo\Redsys\TransactionType;
@@ -19,7 +20,8 @@ use Nowo\Redsys\TransactionType;
  * **Only {@see verifiedParameters()} and the outcome helpers are trusted.** `$decodedParameters` is filled even when the
  * signature is missing or does not verify (the raw JSON, or the decoded but unverified fields) for diagnostics: never
  * act on it without checking {@see isSignatureValid()}, or call {@see assertSignatureValid()} first.
- * {@see responseCode()}, {@see isAuthorized()} and {@see isSuccessfulForTransactionType()} read verified fields only:
+ * {@see responseCode()}, {@see isAuthorized()}, {@see isSuccessfulForTransactionType()}, {@see merchantIdentifier()} and
+ * {@see cofTxnId()} read verified fields only:
  * on an unverified response they return null / false.
  */
 final readonly class RestResponse
@@ -143,6 +145,41 @@ final readonly class RestResponse
     public function isSuccessfulForTransactionType(?TransactionType $type = null): bool
     {
         return $this->outcome()?->isSuccessfulForTransactionType($type) ?? false;
+    }
+
+    /**
+     * Verified Ds_Merchant_Identifier (card reference / token); null when absent or when the signature did not verify.
+     * Store it like a credential and never log it.
+     */
+    public function merchantIdentifier(): ?string
+    {
+        return $this->outcome()?->merchantIdentifier();
+    }
+
+    /**
+     * Verified Ds_Merchant_Cof_Txnid (id of the first COF operation); null when absent or when the signature did not
+     * verify. Never log it.
+     */
+    public function cofTxnId(): ?string
+    {
+        return $this->outcome()?->cofTxnId();
+    }
+
+    /**
+     * var_dump() / print_r() view: the raw body is reduced to its length and the token and COF transaction id are
+     * redacted in the decoded parameters. The public properties keep the real values.
+     *
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
+    {
+        return [
+            'httpStatus' => $this->httpStatus,
+            'rawBody' => Redaction::opaque($this->rawBody),
+            'decodedParameters' => null === $this->decodedParameters ? null : Redaction::fields($this->decodedParameters),
+            'signatureValid' => $this->signatureValid,
+            'errorCode' => $this->errorCode,
+        ];
     }
 
     private function outcome(): ?ResponseOutcome

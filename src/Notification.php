@@ -128,6 +128,40 @@ final readonly class Notification
         return $this->outcome()->isSuccessfulForTransactionType($type);
     }
 
+    /**
+     * Ds_Merchant_Identifier from the verified payload: the card reference (token) Redsys stored after a request with
+     * DS_MERCHANT_IDENTIFIER=REQUIRED; null when absent. Store it like a credential and never log it.
+     */
+    public function merchantIdentifier(): ?string
+    {
+        return $this->outcome()->merchantIdentifier();
+    }
+
+    /**
+     * Ds_Merchant_Cof_Txnid from the verified payload: the id of the first COF operation, to send as
+     * DS_MERCHANT_COF_TXNID on later merchant-initiated charges; null when absent. Never log it.
+     */
+    public function cofTxnId(): ?string
+    {
+        return $this->outcome()->cofTxnId();
+    }
+
+    /**
+     * var_dump() / print_r() view: the Base64 payload is reduced to its length, and the token and COF transaction id
+     * are redacted in the decoded parameters.
+     *
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
+    {
+        return [
+            'encodedParameters' => Redaction::opaque($this->encodedParameters),
+            'signature' => $this->signature,
+            'signatureVersion' => $this->signatureVersion,
+            'decoded' => $this->decoded,
+        ];
+    }
+
     private function outcome(): ResponseOutcome
     {
         return new ResponseOutcome($this->decoded->toArray());

@@ -10,6 +10,7 @@ Sandbox FUC / key / test cards: [SANDBOX.md](SANDBOX.md).
 - [Redirect payment](#redirect-payment)
 - [Notification](#notification)
 - [REST SIS](#rest-sis)
+- [Stored card (COF) and merchant-initiated (MIT) payments](#stored-card-cof-and-merchant-initiated-mit-payments)
 - [Extra DS_MERCHANT_* fields](#extra-ds_merchant_-fields)
 - [Errors](#errors)
 - [Using it from a DDD / hexagonal application](#using-it-from-a-ddd--hexagonal-application)
@@ -50,6 +51,79 @@ A `RestResponse` is signature-checked when Redsys returns the signed trio. **Onl
 - `responseCode()`, `transactionType()`, `isAuthorized()`, `isSuccessfulForTransactionType()`: the same rules as `Notification`, on verified fields only (null / false otherwise).
 
 The public `$decodedParameters` is kept for diagnostics and backward compatibility: it is filled even when the signature fails (raw JSON or unverified decoded fields), so never fulfil an order from it. `$errorCode` (`SISxxxx`) comes from unsigned error bodies.
+
+## Stored card (COF) and merchant-initiated (MIT) payments
+
+Since 1.3.0 `MerchantParameters` has typed helpers for credential-on-file payments. Each one produces exactly the same encoded parameters as the raw `with()` call shown next to it:
+
+| Helper | Raw equivalent |
+| --- | --- |
+| `identifier('REQUIRED')` / `identifier($token)` | `with('DS_MERCHANT_IDENTIFIER', 'REQUIRED' / $token)` |
+| `cofInit()` / `cofInit(false)` | `with('DS_MERCHANT_COF_INI', 'S' / 'N')` |
+| `cofType(CofType::Recurring)` | `with('DS_MERCHANT_COF_TYPE', 'R')` |
+| `excepSca(ScaExemption::MerchantInitiated)` | `with('DS_MERCHANT_EXCEP_SCA', 'MIT')` |
+| `directPayment()` / `directPayment(DirectPayment::Moto)` | `with('DS_MERCHANT_DIRECTPAYMENT', 'true' / 'moto')` |
+| `cofTxnId($txnId)` | `with('DS_MERCHANT_COF_TXNID', $txnId)` |
+
+`CofType`: `I` installments, `R` recurring, `H` reauthorization, `E` resubmission, `D` delayed, `M` incremental, `N` no show, `C` other (Redsys's default). `ScaExemption`: `MIT`, `LWV`, `TRA`, `COR`, `ATD` (all but MIT need the acquirer's activation). Invalid values throw `RedsysException`.
+
+**1. Initial customer-initiated payment that stores the card.** The customer authenticates (3-D Secure) as usual; Redsys returns a card reference and the COF transaction id in the signed notification (redirect) or REST response.
+
+```php
+use Nowo\Redsys\CofType;
+use Nowo\Redsys\Currency;
+use Nowo\Redsys\MerchantParameters;
+use Nowo\Redsys\Notification;
+use Nowo\Redsys\RedirectForm;
+use Nowo\Redsys\TransactionType;
+
+$params = MerchantParameters::create()
+    ->forMerchant($merchant)
+    ->amount(999)                      // 9.99 EUR, minor units
+    ->currency(Currency::Eur)
+    ->order('2611120001')
+    ->transactionType(TransactionType::Authorization)
+    ->merchantUrl('https://shop.example/redsys/notify')
+    ->identifier(MerchantParameters::IDENTIFIER_REQUIRED) // ask Redsys for a card reference
+    ->cofInit()                                           // first COF operation: store the credentials
+    ->cofType(CofType::Recurring);
+
+$html = RedirectForm::forMerchant($merchant, $params);
+
+// Notification endpoint:
+$notification = Notification::fromRequest($request->request->all(), $merchant); // throws unless the signature verifies
+if ($notification->isSuccessfulForTransactionType(TransactionType::Authorization)) {
+    $token = $notification->merchantIdentifier(); // Ds_Merchant_Identifier
+    $txnId = $notification->cofTxnId();           // Ds_Merchant_Cof_Txnid
+    // store both like a credential (encrypted at rest), next to the subscription; never log them
+}
+```
+
+**2. Later merchant-initiated recurring charge (MIT), over REST, without the customer.**
+
+```php
+use Nowo\Redsys\ScaExemption;
+
+$params = MerchantParameters::create()
+    ->forMerchant($merchant)
+    ->amount(999)
+    ->currency(Currency::Eur)
+    ->order('2612120001')               // a new order number per charge
+    ->transactionType(TransactionType::Authorization)
+    ->identifier($token)                // the stored reference
+    ->cofTxnId($txnId)                  // the id of the initial COF operation
+    ->cofType(CofType::Recurring)
+    ->excepSca(ScaExemption::MerchantInitiated)
+    ->directPayment();                  // DS_MERCHANT_DIRECTPAYMENT=true: no customer authentication
+
+$response = $restClient->treat($params);
+$response->assertSignatureValid();
+if ($response->isSuccessfulForTransactionType(TransactionType::Authorization)) {
+    // charged; $response->cofTxnId() / merchantIdentifier() are read from verified fields only (null otherwise)
+}
+```
+
+`Notification::merchantIdentifier()` / `cofTxnId()` and `RestResponse::merchantIdentifier()` / `cofTxnId()` read `Ds_Merchant_Identifier` / `Ds_Merchant_Cof_Txnid` (and their upper-case spellings) from verified fields only; never take them from `RestResponse::$decodedParameters`. `var_dump()` / `print_r()` of `MerchantParameters`, `Notification` and `RestResponse` show both values as `[redacted]`, and `RestClient` never logs them. Redsys reference: [tokenización MIT](https://pagosonline.redsys.es/desarrolladores-inicio/documentacion-funcionalidades-avanzadas/tokenizacion/tokenizacion-mit/) and [parámetros de entrada y salida](https://pagosonline.redsys.es/desarrolladores-inicio/integrate-con-nosotros/parametros-de-entrada-y-salida/).
 
 ## Extra DS_MERCHANT_* fields
 
