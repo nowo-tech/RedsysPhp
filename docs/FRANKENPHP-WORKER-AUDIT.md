@@ -4,6 +4,7 @@
 |-------|-------|
 | Package | `nowo-tech/redsys-php` (`library`, framework-agnostic, no Symfony bundle) |
 | Audited revision | `v1.0.10` (`Notification::isSuccessfulForTransactionType()` is stateless) |
+| Reviewed version | `v1.3.0` (2026-11-12 review: `git diff v1.3.0 -- src` is empty at this commit) |
 | Audit date | 2026-10-13 (re-checked; first audit 2026-09-24 on `v1.0.3`) |
 | Method | Manual review of every file under `src/` plus the non-Composer `autoload.php` + PHPStan classic / **worker-strict** rulesets |
 | **Verdict** | ✅ **Viable** — immutable objects (`final readonly class`), no globals, no output; only a Low note on the default HTTP timeout |
@@ -17,6 +18,7 @@
   - [W-01 — Default cURL total timeout is 30 seconds (Low)](#w-01--default-curl-total-timeout-is-30-seconds-low)
   - [W-02 — Notification input is an array, not superglobals (Info)](#w-02--notification-input-is-an-array-not-superglobals-info)
   - [W-03 — Non-Composer autoloader is idempotent (Info)](#w-03--non-composer-autoloader-is-idempotent-info)
+- [Kept-alive worker test (REQ-RUNTIME-002)](#kept-alive-worker-test-req-runtime-002)
 - [Usage recommendations in worker mode](#usage-recommendations-in-worker-mode)
 - [Re-audit triggers](#re-audit-triggers)
 
@@ -82,6 +84,12 @@ Value objects and enums are created per call. A shared "template" `MerchantParam
 - **Recommendation:** none. Composer autoloading remains the preferred path.
 
 No other findings. The signature check uses `hash_equals()`, and no signing key or diversified key is cached between calls. **Scenario B (kernel never reset) is safe** when integrators follow the usage recommendations below.
+
+## Kept-alive worker test (REQ-RUNTIME-002)
+
+**Safe with kernel reset false.** The library has no kernel or container, so the test models the worker as one long-lived process. `tests/Integration/WorkerKeptAliveTest.php::testAlternatingMerchantsInOneProcessKeepDataSeparatedAndMemoryFlat` creates two `Merchant` objects (two tenants, different codes and keys) and one `RestClient` per merchant ONCE, then runs 1000 payments alternating the tenants with those shared objects, with nothing ever reset. Per iteration it asserts: the redirect form and `SignedPayload` hold only the own merchant code and order; the signature verifies with the own key and not with the other tenant's; `Notification::fromRequest()` accepts the own merchant and rejects the other (`SignatureInvalidException`); the REST response (signed by a fake bank per merchant code) verifies for its merchant and carries none of the other merchant's data. After a 50-iteration warm-up and a GC pass, memory growth must stay under 4 MiB.
+
+Rule 7 (host Doctrine): the library has no persistence and no framework integration; it never touches a host EntityManager.
 
 ## Usage recommendations in worker mode
 
