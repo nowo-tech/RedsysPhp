@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.3.0] - 2026-11-12](#130---2026-11-12)
 - [[1.2.0] - 2026-11-10](#120---2026-11-10)
 - [[1.1.0] - 2026-10-22](#110---2026-10-22)
 - [[1.0.10] - 2026-10-13](#1010---2026-10-13)
@@ -23,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-08-21](#100---2026-08-21)
 
 ## [Unreleased]
+
+## [1.3.0] - 2026-11-12
 
 Typed helpers for credential-on-file (COF) and merchant-initiated (MIT) payments. Requested by Beacon; `MerchantParameters::with()` keeps working unchanged. See [UPGRADING](UPGRADING.md#to-130).
 
@@ -41,6 +44,8 @@ Typed helpers for credential-on-file (COF) and merchant-initiated (MIT) payments
 ### Security
 
 - `MerchantParameters`, `Notification` and `RestResponse` define `__debugInfo()`: `var_dump()` / `print_r()` show the card reference and the COF txn id as `[redacted]` (the `REQUIRED` marker stays visible) and Base64 payloads / raw bodies as their length. `toArray()`, `encode()`, the public properties and the getters keep the real values. `RestClient` logs never contained them (now covered by a test). The redaction is `__debugInfo()` only: `json_encode()`, `var_export()`, `serialize()`, `(array)` and the public `$rawBody` / `$decodedParameters` still carry the raw values.
+
+[1.3.0]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.3.0
 
 ## [1.2.0] - 2026-11-10
 
