@@ -31,7 +31,8 @@ use Psr\Log\AbstractLogger;
  */
 final class CofMitHelpersTest extends TestCase
 {
-    private const string TOKEN = '120c14ed9f7264383434fc1154559f1e2bcc2b1c';
+    // Low-entropy fake card reference (40 ASCII letters / digits, like a Redsys reference); never a real one.
+    private const string TOKEN = 'TESTTOKEN0000000000000000000000000000001';
     private const string TXN_ID = '2006031152000';
 
     private Merchant $merchant;
