@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Tests
+
+- `WorkerKeptAliveTest`: one long-lived process, 1000 payments as two merchants with shared objects, no reset, isolation and memory assertions (REQ-RUNTIME-002); `docs/FRANKENPHP-WORKER-AUDIT.md` refreshed.
+
 ## [1.3.0] - 2026-11-12
 
 Typed helpers for credential-on-file (COF) and merchant-initiated (MIT) payments. Requested by Beacon; `MerchantParameters::with()` keeps working unchanged. See [UPGRADING](UPGRADING.md#to-130).
