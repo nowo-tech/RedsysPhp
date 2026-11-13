@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.4.0] - 2026-11-13](#140---2026-11-13)
 - [[1.3.0] - 2026-11-12](#130---2026-11-12)
 - [[1.2.0] - 2026-11-10](#120---2026-11-10)
 - [[1.1.0] - 2026-10-22](#110---2026-10-22)
@@ -25,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-11-13
+
 ### Added
 
 - `Rest\RestClientInterface` (`init()`, `treat()`) and `Signature\SignerInterface` (`version()`, `sign()`, `verify()`), implemented by `RestClient` and `Signer` (REQ-ARCH-001 rule 1). Type your adapters against them.
@@ -39,6 +42,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `SignatureCheckTest`: a signer whose `verify()` always returns true does not let a forged notification or REST response through; the built-in signer signs and verifies identically for every signature version.
 - `WorkerKeptAliveTest`: one long-lived process, 1000 payments as two merchants with shared objects, no reset, isolation and memory assertions (REQ-RUNTIME-002); `docs/FRANKENPHP-WORKER-AUDIT.md` refreshed.
+
+[1.4.0]: https://github.com/nowo-tech/RedsysPhp/releases/tag/v1.4.0
 
 ## [1.3.0] - 2026-11-12
 

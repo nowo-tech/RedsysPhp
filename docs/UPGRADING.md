@@ -3,7 +3,8 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
-  - [To 1.4.0](#to-140)
+- [To 1.4.0](#to-140)
+  - [To 1.4.0](#to-140-1)
 - [To 1.3.0](#to-130)
 - [To 1.2.0](#to-120)
 - [To 1.1.0](#to-110)
@@ -19,6 +20,14 @@
 - [To 1.0.0 (clean-room)](#to-100-clean-room)
 
 ## Unreleased
+
+## To 1.4.0
+
+From **1.3.0**:
+
+```bash
+composer update nowo-tech/redsys-php
+```
 
 ### To 1.4.0
 
