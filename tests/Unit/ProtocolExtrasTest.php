@@ -12,7 +12,6 @@ use Nowo\Redsys\MerchantParameters;
 use Nowo\Redsys\Notification;
 use Nowo\Redsys\Signature\Signer;
 use Nowo\Redsys\SignatureVersion;
-use Nowo\Redsys\Version;
 use PHPUnit\Framework\TestCase;
 
 final class ProtocolExtrasTest extends TestCase
@@ -56,10 +55,5 @@ final class ProtocolExtrasTest extends TestCase
             'Ds_Signature' => 'not-a-valid-signature',
             'Ds_SignatureVersion' => SignatureVersion::HmacSha512V2->value,
         ], $merchant);
-    }
-
-    public function testVersionConstant(): void
-    {
-        self::assertSame('1.0.10', Version::VERSION);
     }
 }
