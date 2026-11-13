@@ -66,7 +66,8 @@ final class PortsTest extends TestCase
 
         $notification = Notification::fromRequest($payload->toArray(), $merchant);
         self::assertSame('1444904795', $notification->parameters()->orderNumber());
-        self::assertSame(['sign', 'verify'], $custom->calls);
+        // The library recomputes the signature with sign() and compares it itself; verify() is never called.
+        self::assertSame(['sign', 'sign'], $custom->calls);
     }
 
     public function testCustomSignerDecidesVerification(): void

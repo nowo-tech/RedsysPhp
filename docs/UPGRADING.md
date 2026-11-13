@@ -26,6 +26,7 @@ From **1.3.x**: no change needed. Additive only:
 
 - New ports `Nowo\Redsys\Rest\RestClientInterface` and `Nowo\Redsys\Signature\SignerInterface`; `RestClient` and `Signer` implement them. Prefer them in your own type hints.
 - `new Merchant(…, $signatureVersion, $customSigner)` accepts a custom signer (for example an HSM or KMS one); its `version()` must equal the merchant's `SignatureVersion`, otherwise the constructor throws `RedsysException`. `Merchant::signer()` still returns the built-in `Signer`; the library now signs and verifies through `Merchant::signatureSigner()`, which is that same `Signer` unless you pass a custom one.
+- A custom signer only needs a correct `sign()` for the library: `Notification::fromRequest()` and `RestResponse::fromHttp()` recompute the signature with `sign()` and compare it with `hash_equals()` themselves; they never call `verify()`. Keep `verify()` correct for your own code that calls it.
 
 ## To 1.3.0
 

@@ -11,6 +11,7 @@ use Nowo\Redsys\Merchant;
 use Nowo\Redsys\MerchantParameters;
 use Nowo\Redsys\Redaction;
 use Nowo\Redsys\ResponseOutcome;
+use Nowo\Redsys\Signature\SignatureCheck;
 use Nowo\Redsys\SignatureVersion;
 use Nowo\Redsys\TransactionType;
 
@@ -69,9 +70,10 @@ final readonly class RestResponse
             }
 
             // Verify with the merchant's configured algorithm only; a different (attacker-supplied)
-            // Ds_SignatureVersion is a downgrade attempt and never validates.
+            // Ds_SignatureVersion is a downgrade attempt and never validates. The library compares the signature
+            // itself (sign() + hash_equals): a custom signer's verify() is never trusted.
             $valid = SignatureVersion::tryFrom($versionRaw) === $merchant->signatureVersion()
-                && $merchant->signatureSigner()->verify($encoded, $order, $signature);
+                && SignatureCheck::matches($merchant->signatureSigner(), $encoded, $order, $signature);
 
             return new self($response->statusCode, $response->body, $fields, $valid, $errorCode);
         } catch (\Throwable) {

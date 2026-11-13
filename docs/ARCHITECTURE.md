@@ -20,7 +20,7 @@ foundation type in its public API.
 | Default adapters | `Rest\RestClient`, `Signature\Signer`, `Http\CurlHttpClient`, `Http\Psr18HttpClient` |
 | Value objects | `Merchant`, `MerchantParameters`, `SignedPayload`, `Notification`, `ResponseOutcome`, `Rest\RestResponse`, `Http\HttpResponse` |
 | Enums | `Environment`, `SignatureVersion`, `Currency`, `TransactionType`, `CofType`, `ScaExemption`, `DirectPayment` |
-| Helpers | `RedirectForm` (static, returns an HTML string), `Redaction`, `Encoding\Base64Url` |
+| Helpers | `RedirectForm` (static, returns an HTML string), `Redaction`, `Encoding\Base64Url`, `Signature\SignatureCheck` (internal, since 1.4.0) |
 | Exceptions | `Exception\RedsysException` and its subclasses `SignatureInvalidException`, `InvalidResponseException`, `TransportException` |
 
 ## Ports and extension points (SPI)
@@ -38,6 +38,11 @@ Every replaceable piece is an interface with a default implementation. Type your
 passed, otherwise the built-in `Signer`. `Merchant::signer()` keeps returning the built-in `Signer` (unchanged since
 1.0). The merchant's configured `SignatureVersion` stays the only accepted algorithm: a received
 `Ds_SignatureVersion` that differs is rejected before the signer is asked (no downgrade).
+
+The library only calls `sign()` on that signer. To check a received signature it recomputes it with `sign()` and
+compares both with `hash_equals()` itself (standard or URL-safe Base64, padding optional), so a custom signer whose
+`verify()` is wrong cannot make `Notification` or `RestResponse` accept a forged payload. `verify()` stays on the
+interface for hosts that check signatures themselves.
 
 `RedirectForm` stays a static helper: with a strict CSP render `SignedPayload::toArray()` as hidden fields in your
 own template instead.

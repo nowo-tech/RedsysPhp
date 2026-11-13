@@ -58,7 +58,7 @@ The library has no HTTP routes, no storage and no CLI of its own; the host owns 
 
 ## Threat notes
 
-- Signature bypass → financial fraud: always `hash_equals` via `Signer::verify`.
+- Signature bypass → financial fraud: `Notification::fromRequest` and `RestResponse::fromHttp` recompute the signature with the signer's `sign()` and compare it with `hash_equals` themselves; a custom signer's `verify()` is never trusted by the library.
 - Algorithm downgrade: `Ds_SignatureVersion` comes from the (untrusted) request. `Notification::fromRequest` and `RestResponse::fromHttp` always verify with the `Merchant`'s configured `SignatureVersion`; a different value is rejected (`SignatureInvalidException` / `signatureValid = false`).
 - Secret key in stack traces: `Merchant` and `Signer` constructors mark the key `#[\SensitiveParameter]`.
 - Key leak across workers: this SDK is instance-based (`Merchant` is `final readonly class`); no process-wide static credentials. See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
