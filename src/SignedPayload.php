@@ -19,7 +19,7 @@ final readonly class SignedPayload
     public static function from(Merchant $merchant, MerchantParameters $parameters): self
     {
         $encoded = $parameters->encode();
-        $signature = $merchant->signer()->sign($encoded, $parameters->orderNumber());
+        $signature = $merchant->signatureSigner()->sign($encoded, $parameters->orderNumber());
 
         return new self($encoded, $signature, $merchant->signatureVersion());
     }

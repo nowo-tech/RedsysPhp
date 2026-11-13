@@ -150,7 +150,8 @@ RedsysPhp is an **infrastructure client**: no framework, no persistence, no glob
 - Redirect flow: build `MerchantParameters` in the adapter and either return `RedirectForm::forMerchant()` HTML or, with a strict CSP, render `SignedPayload::from($merchant, $params)->toArray()` as hidden fields in your own template.
 - Notification: call `Notification::fromRequest($fields, $merchant)` in the controller/adapter, then map `parameters()`, `responseCode()` and `isSuccessfulForTransactionType($typeYouSent)` to your own domain event (for example `PaymentAuthorized(orderId)`). **Always pass the transaction type you sent**: without it the type comes from the signed payload, so a genuine refund (3 / `0900`) or cancellation (9 / `0400`) notification of the same order would read as a successful payment. Check that the order, amount, currency and merchant code match what you sent. Map `SignatureInvalidException` to a security event and `InvalidResponseException` to a rejected request (see [Errors](#errors)).
 - REST: `RestClient::init()` / `treat()`; call `assertSignatureValid()` (or check `isSignatureValid()`) and read `isSuccessfulForTransactionType($typeYouSent)` / `verifiedParameters()`, never the raw `$decodedParameters`. Map `TransportException` to your own "gateway unavailable" error (retry network failures and timeouts; for `treat` check the order's state first).
-- Tests: implement `Nowo\Redsys\Http\HttpClient` with a fake, or inject `Psr18HttpClient` with your PSR-18 client.
+- Tests: implement `Nowo\Redsys\Http\HttpClient` with a fake, or inject `Psr18HttpClient` with your PSR-18 client. Type your adapters against `Nowo\Redsys\Rest\RestClientInterface` (since 1.4.0) to fake the REST calls themselves.
+- Ports, extension points and the Symfony / DDD wiring: [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ```php
 namespace App\Infrastructure\Payment;
@@ -209,5 +210,5 @@ Known limitations:
 
 - `RestResponse::$decodedParameters` stays public and is filled for unverified responses (backward compatibility); use `verifiedParameters()`.
 - `RedirectForm` uses an inline script; with a strict CSP render the hidden fields yourself.
-- `RestClient`, `Signer` and `RedirectForm` are final without interfaces; the `HttpClient` port is the test seam.
+- `RedirectForm` is a static helper without an interface. `RestClient` and `Signer` implement `Rest\RestClientInterface` and `Signature\SignerInterface` since 1.4.0 (a custom signer goes into the `Merchant` constructor); see [ARCHITECTURE.md](ARCHITECTURE.md#ports-and-extension-points-spi).
 - `MerchantParameters::amount()` accepts any string; pass minor units (cents) from your own money type.

@@ -64,7 +64,7 @@ final readonly class Notification
         $decoded = MerchantParameters::decode($encoded);
         $order = self::extractOrder($decoded);
 
-        if (!$merchant->signer()->verify($encoded, $order, $signature)) {
+        if (!$merchant->signatureSigner()->verify($encoded, $order, $signature)) {
             throw new SignatureInvalidException('Invalid Redsys notification signature.');
         }
 

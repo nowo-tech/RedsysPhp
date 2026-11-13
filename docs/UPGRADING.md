@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+  - [To 1.4.0](#to-140)
 - [To 1.3.0](#to-130)
 - [To 1.2.0](#to-120)
 - [To 1.1.0](#to-110)
@@ -18,6 +19,13 @@
 - [To 1.0.0 (clean-room)](#to-100-clean-room)
 
 ## Unreleased
+
+### To 1.4.0
+
+From **1.3.x**: no change needed. Additive only:
+
+- New ports `Nowo\Redsys\Rest\RestClientInterface` and `Nowo\Redsys\Signature\SignerInterface`; `RestClient` and `Signer` implement them. Prefer them in your own type hints.
+- `new Merchant(…, $signatureVersion, $customSigner)` accepts a custom signer (for example an HSM or KMS one); its `version()` must equal the merchant's `SignatureVersion`, otherwise the constructor throws `RedsysException`. `Merchant::signer()` still returns the built-in `Signer`; the library now signs and verifies through `Merchant::signatureSigner()`, which is that same `Signer` unless you pass a custom one.
 
 ## To 1.3.0
 

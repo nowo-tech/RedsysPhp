@@ -71,7 +71,7 @@ final readonly class RestResponse
             // Verify with the merchant's configured algorithm only; a different (attacker-supplied)
             // Ds_SignatureVersion is a downgrade attempt and never validates.
             $valid = SignatureVersion::tryFrom($versionRaw) === $merchant->signatureVersion()
-                && $merchant->signer()->verify($encoded, $order, $signature);
+                && $merchant->signatureSigner()->verify($encoded, $order, $signature);
 
             return new self($response->statusCode, $response->body, $fields, $valid, $errorCode);
         } catch (\Throwable) {

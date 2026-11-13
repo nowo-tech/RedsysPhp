@@ -25,6 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Rest\RestClientInterface` (`init()`, `treat()`) and `Signature\SignerInterface` (`version()`, `sign()`, `verify()`), implemented by `RestClient` and `Signer` (REQ-ARCH-001 rule 1). Type your adapters against them.
+- `Merchant` takes an optional custom `SignerInterface` (last constructor argument; its version must equal the merchant's) and `Merchant::signatureSigner()` returns the signer the library uses to sign payloads and verify notifications and REST responses. Without a custom signer nothing changes.
+- `docs/ARCHITECTURE.md`: public surface, ports and extension points, standard Symfony and DDD host wiring.
+
 ### Tests
 
 - `WorkerKeptAliveTest`: one long-lived process, 1000 payments as two merchants with shared objects, no reset, isolation and memory assertions (REQ-RUNTIME-002); `docs/FRANKENPHP-WORKER-AUDIT.md` refreshed.

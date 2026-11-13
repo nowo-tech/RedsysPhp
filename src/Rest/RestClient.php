@@ -14,7 +14,7 @@ use Psr\Log\NullLogger;
 /**
  * REST SIS client: iniciaPeticionREST / trataPeticionREST.
  */
-final readonly class RestClient
+final readonly class RestClient implements RestClientInterface
 {
     public function __construct(
         private Merchant $merchant,
