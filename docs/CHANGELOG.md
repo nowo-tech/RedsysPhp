@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The PHP Lines-coverage gate (`.scripts/php-coverage-percent.sh`) now defaults to **100%** (was 99%). The suite is already at 100%; the gate only stops a regression from merging.
+
 ## [1.4.0] - 2026-11-13
 
 ### Added

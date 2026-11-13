@@ -2,7 +2,7 @@
 
 ## Checklist
 
-- [ ] `make release-check` green (includes `check-no-cursor-coauthor`, CS, PHPStan, tests, coverage ≥ 99%)
+- [ ] `make release-check` green (includes `check-no-cursor-coauthor`, CS, PHPStan, tests, coverage 100%)
 - [ ] `docs/CHANGELOG.md` updated for the version
 - [ ] `src/Version.php` and `composer.json` `extra.nowo-package-version` match
 - [ ] No proprietary PHPL_* sources or Cursor co-author trailers (`make check-no-cursor-coauthor` before push — REQ-GIT-001)
