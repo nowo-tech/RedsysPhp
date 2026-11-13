@@ -12,6 +12,8 @@
 
 ## Tagging
 
+- Run `make bump-version VERSION=X.Y.Z` in the release commit: it sets `Nowo\Redsys\Version::VERSION` (sent in the User-Agent) and `extra.nowo-package-version` to the tag being released. `tests/Unit/VersionTest.php` fails if they differ, `make check-version` (part of `release-check`) fails if they are older than the latest tag, and `release.yml` fails if they differ from the pushed tag.
+
 ```sh
 # X.Y.Z = the version in src/Version.php (e.g. 1.0.9)
 git tag -a vX.Y.Z -m "RedsysPhp vX.Y.Z"
