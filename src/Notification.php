@@ -6,6 +6,7 @@ namespace Nowo\Redsys;
 
 use Nowo\Redsys\Exception\InvalidResponseException;
 use Nowo\Redsys\Exception\SignatureInvalidException;
+use Nowo\Redsys\Signature\SignatureCheck;
 
 /**
  * Online notification / browser return payload verifier.
@@ -64,7 +65,8 @@ final readonly class Notification
         $decoded = MerchantParameters::decode($encoded);
         $order = self::extractOrder($decoded);
 
-        if (!$merchant->signer()->verify($encoded, $order, $signature)) {
+        // The library compares the signature itself (sign() + hash_equals): a custom signer's verify() is never trusted.
+        if (!SignatureCheck::matches($merchant->signatureSigner(), $encoded, $order, $signature)) {
             throw new SignatureInvalidException('Invalid Redsys notification signature.');
         }
 

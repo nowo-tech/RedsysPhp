@@ -25,8 +25,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Rest\RestClientInterface` (`init()`, `treat()`) and `Signature\SignerInterface` (`version()`, `sign()`, `verify()`), implemented by `RestClient` and `Signer` (REQ-ARCH-001 rule 1). Type your adapters against them.
+- `Merchant` takes an optional custom `SignerInterface` (last constructor argument; its version must equal the merchant's) and `Merchant::signatureSigner()` returns the signer the library uses to sign payloads and verify notifications and REST responses. Without a custom signer nothing changes.
+- `docs/ARCHITECTURE.md`: public surface, ports and extension points, standard Symfony and DDD host wiring.
+
+### Security
+
+- `Notification::fromRequest()` and `RestResponse::fromHttp()` no longer call `SignerInterface::verify()`: they recompute the signature with the merchant signer's `sign()` and compare it with `hash_equals()` themselves (standard or URL-safe Base64, padding optional), so a custom signer with a wrong `verify()` (always true, loose comparison, no Base64 normalisation) cannot make them accept a forged notification or REST response (audit OI-R1). The built-in `Signer` gives byte-identical signatures and results; the `Ds_SignatureVersion` match checks are unchanged. `verify()` stays on the interface for hosts.
+
 ### Tests
 
+- `SignatureCheckTest`: a signer whose `verify()` always returns true does not let a forged notification or REST response through; the built-in signer signs and verifies identically for every signature version.
 - `WorkerKeptAliveTest`: one long-lived process, 1000 payments as two merchants with shared objects, no reset, isolation and memory assertions (REQ-RUNTIME-002); `docs/FRANKENPHP-WORKER-AUDIT.md` refreshed.
 
 ## [1.3.0] - 2026-11-12

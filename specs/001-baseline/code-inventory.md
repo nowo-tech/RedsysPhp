@@ -24,6 +24,7 @@ Traceability for REQ-SPECKIT-003. All production units under `src/`.
 | Unit | Path | Spec refs |
 |------|------|-----------|
 | Signer | `src/Signature/Signer.php` | US-001, FR-001 |
+| SignatureCheck | `src/Signature/SignatureCheck.php` | US-002 |
 | Base64Url | `src/Encoding/Base64Url.php` | FR-002 |
 | RedsysException | `src/Exception/RedsysException.php` | US-002 |
 

@@ -15,7 +15,7 @@ use Nowo\Redsys\SignatureVersion;
  * - https://pagosonline.redsys.es/…/firmar-una-operacion/ (HMAC_SHA512_V2)
  * - Redsys “Guía de migración a firma HMAC SHA256” (HMAC_SHA256_V1)
  */
-final readonly class Signer
+final readonly class Signer implements SignerInterface
 {
     public function __construct(
         #[\SensitiveParameter]
