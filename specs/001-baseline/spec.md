@@ -87,6 +87,6 @@ As an app on FrankenPHP worker mode (`reset_kernel` false / scenario B), I use s
 
 - **SC-001**: Official V2 vector green in CI.
 - **SC-002**: PHPStan level 8, zero ignoreErrors; FrankenPHP worker-strict clean.
-- **SC-003**: Lines coverage ≥ 99% on `src/`.
+- **SC-003**: Lines coverage = 100% on `src/`.
 - **SC-004**: MIT license; Packagist-ready metadata.
 - **SC-005**: Worker audit verdict **Viable** for scenario B (kernel never reset).

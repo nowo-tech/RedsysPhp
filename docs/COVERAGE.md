@@ -14,7 +14,7 @@ PHPUnit Clover gate: **100% Lines** on `src/` (REQ-TEST-003).
 
 ## Gate
 
-`.scripts/php-coverage-percent.sh` fails the build when PHPUnit **Lines** coverage is below **99%** (REQ-TEST-003).
+`.scripts/php-coverage-percent.sh` fails the build when PHPUnit **Lines** coverage is below **100%** (REQ-TEST-003).
 
 Current measured Lines coverage: **100%** (278/278 lines).
 

@@ -20,7 +20,7 @@ fi
 
 echo "Global PHP coverage (Lines): ${VALUE}%"
 
-MIN="${COVERAGE_MIN:-99}"
+MIN="${COVERAGE_MIN:-100}"
 awk -v v="$VALUE" -v m="$MIN" 'BEGIN { if (v + 0 < m + 0) exit 1 }' || {
   echo "ERROR: PHP Lines coverage ${VALUE}% is below ${MIN}% (REQ-TEST-003)" >&2
   exit 1
