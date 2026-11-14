@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.4.1] - 2026-11-13](#141---2026-11-13)
 - [[1.4.0] - 2026-11-13](#140---2026-11-13)
 - [[1.3.0] - 2026-11-12](#130---2026-11-12)
 - [[1.2.0] - 2026-11-10](#120---2026-11-10)
@@ -29,6 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The PHP Lines-coverage gate (`.scripts/php-coverage-percent.sh`) now defaults to **100%** (was 99%). The suite is already at 100%; the gate only stops a regression from merging.
+
+## [1.4.1] - 2026-11-13
+
+### Fixed
+
+- `Version::VERSION` and `extra.nowo-package-version` in `composer.json` had been left at `1.0.10`, so releases v1.0.10 through v1.4.0 reported `1.0.10` in the library's HTTP User-Agent. 1.4.1 corrects both and adds a release-time check (`.scripts/check-version.sh`, run by `release.yml` and `make release-check`, plus `make bump-version`) so they cannot drift from the tag again. No behaviour, interface or payment-flow change.
 
 ## [1.4.0] - 2026-11-13
 

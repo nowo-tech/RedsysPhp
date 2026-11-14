@@ -2,7 +2,7 @@
 # REQ-MAKE-001 / REQ-MAKE-002 / REQ-MAKE-006 / REQ-MAKE-008 / REQ-MAKE-010
 
 .PHONY: help ensure-up up down down-dev build shell install assets test test-coverage cs-check cs-fix rector rector-dry phpstan igor qa release-check composer-sync clean update validate setup-hooks check-no-cursor-coauthor strip-cursor-coauthor-from-history \
-	check-open-prs check-no-raw-html-form demo-smoke
+	check-open-prs check-no-raw-html-form check-version bump-version demo-smoke
 
 COMPOSER_BIN := /usr/bin/composer
 COMPOSE := $(shell docker compose version >/dev/null 2>&1 && echo "docker compose" || echo "docker-compose")
@@ -30,6 +30,8 @@ help:
 	@echo "  qa            Run QA checks (cs-check + phpstan + test)"
 	@echo "  release-check Full pre-release chain (REQ-MAKE-002): hygiene, open PRs, raw-form gate, QA, Igor, coverage, demo"
 	@echo "  demo-smoke    Boot demo/symfony8 and assert HTTP 200 (REQ-TEST-011)"
+	@echo "  check-version Fail if src/Version.php, composer extra.nowo-package-version and the release tag disagree"
+	@echo "  bump-version  Set Version::VERSION + extra.nowo-package-version (make bump-version VERSION=X.Y.Z)"
 	@echo "  setup-hooks   Install git hooks (REQ-GIT-001)"
 
 ensure-up:
@@ -106,6 +108,15 @@ igor: ensure-up
 check-open-prs:
 	@bash .scripts/check-open-prs.sh
 
+check-version:
+	@bash .scripts/check-version.sh
+
+bump-version:
+	@echo "$(VERSION)" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$$' || { echo "Usage: make bump-version VERSION=X.Y.Z"; exit 1; }
+	@sed -i.bak -E "s/(const string VERSION = ')[^']*'/\1$(VERSION)'/" src/Version.php && rm -f src/Version.php.bak
+	@sed -i.bak -E 's/("nowo-package-version": ")[^"]*"/\1$(VERSION)"/' composer.json && rm -f composer.json.bak
+	@bash .scripts/check-version.sh v$(VERSION)
+
 check-no-raw-html-form:
 	@bash .scripts/check-no-raw-html-form.sh
 
@@ -118,6 +129,7 @@ release-check:
 	@$(MAKE) ensure-up
 	@$(MAKE) check-no-cursor-coauthor
 	@$(MAKE) check-open-prs
+	@$(MAKE) check-version
 	@$(MAKE) check-no-raw-html-form
 	@$(MAKE) composer-sync
 	@$(MAKE) cs-fix
