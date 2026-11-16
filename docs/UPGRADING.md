@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 1.4.2](#to-142)
 - [To 1.4.0](#to-140)
   - [To 1.4.0](#to-140-1)
 - [To 1.3.0](#to-130)
@@ -20,6 +21,14 @@
 - [To 1.0.0 (clean-room)](#to-100-clean-room)
 
 ## Unreleased
+
+## To 1.4.2
+
+From **1.4.1**:
+
+```bash
+composer update nowo-tech/redsys-php
+```
 
 From **1.4.x**: no change needed unless you pass a custom signer to `Merchant`.
 
