@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- `Merchant` with a custom signer (HSM / KMS): the secret key is now optional (it defaults to `''` and is only required when no custom signer is passed), so hosts no longer need a guessable placeholder key. For a custom-signer merchant without a key, `Merchant::signer()` throws `RedsysException` instead of building a built-in `Signer` over an empty key. A custom signer with a non-empty key keeps getting the built-in `Signer` from `signer()` (no BC break). Host code should verify through `Merchant::signatureSigner()`, as the library does (audit RF3-L1). Without a custom signer nothing changes. With a custom signer, an empty merchant code or terminal is reported as "Merchant code and terminal are required.".
+
 ### Documentation
 
 - Spec Kit baseline: the code inventory maps all 30 files under `src/` (1.3 COF/MIT enums, 1.4 ports and typed exceptions) with `FR-011`–`FR-013` in the spec (REQ-SPECKIT-001/003). README and `docs/COVERAGE.md` show the current CI line count (387/387).

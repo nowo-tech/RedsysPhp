@@ -61,7 +61,7 @@ final class PortsTest extends TestCase
         $params = $this->params($merchant);
 
         $payload = SignedPayload::from($merchant, $params);
-        self::assertSame($merchant->signer()->sign($params->encode(), '1444904795'), $payload->signature);
+        self::assertSame((new Signer(self::KEY))->sign($params->encode(), '1444904795'), $payload->signature);
         self::assertSame(['sign'], $custom->calls);
 
         $notification = Notification::fromRequest($payload->toArray(), $merchant);
@@ -103,6 +103,88 @@ final class PortsTest extends TestCase
     {
         $this->expectException(RedsysException::class);
         new Merchant('999008881', '1', self::KEY, Environment::Test, SignatureVersion::HmacSha256V1, new Signer(self::KEY));
+    }
+
+    public function testSecretKeyIsOptionalWithACustomSigner(): void
+    {
+        $custom = new RecordingSigner(new Signer(self::KEY));
+        $merchant = new Merchant('999008881', '1', customSigner: $custom);
+        $params = $this->params($merchant);
+
+        self::assertSame('', $merchant->secretKey());
+        self::assertSame($custom, $merchant->signatureSigner());
+
+        $payload = SignedPayload::from($merchant, $params);
+        self::assertSame((new Signer(self::KEY))->sign($params->encode(), '1444904795'), $payload->signature);
+        self::assertSame('1444904795', Notification::fromRequest($payload->toArray(), $merchant)->parameters()->orderNumber());
+    }
+
+    public function testSecretKeyIsStillRequiredWithoutACustomSigner(): void
+    {
+        $this->expectException(RedsysException::class);
+        new Merchant('999008881', '1');
+    }
+
+    public function testMerchantCodeAndTerminalAreStillRequiredWithACustomSigner(): void
+    {
+        $custom = new Signer(self::KEY);
+        foreach ([['', '1'], ['999008881', '']] as [$code, $terminal]) {
+            try {
+                new Merchant($code, $terminal, customSigner: $custom);
+                self::fail('Expected RedsysException for an empty merchant code or terminal.');
+            } catch (RedsysException $e) {
+                self::assertSame('Merchant code and terminal are required.', $e->getMessage(), 'no secret key mention with a custom signer');
+            }
+        }
+    }
+
+    /**
+     * RF3-L1: a custom-signer merchant needs no placeholder key, and signer() refuses to build a built-in signer
+     * over the missing key; the library verifies through signatureSigner(), so a forgery is rejected.
+     */
+    public function testSignerThrowsWithACustomSignerAndNoSecretKey(): void
+    {
+        $merchant = new Merchant('999008881', '1', customSigner: new RejectingSigner());
+        $encoded = $this->params($this->merchant())->encode();
+        $forged = (new Signer('unused'))->sign($encoded, '1444904795');
+
+        try {
+            $merchant->signer();
+            self::fail('Merchant::signer() must not build a signer without a secret key.');
+        } catch (RedsysException $e) {
+            self::assertStringContainsString('signatureSigner()', $e->getMessage());
+        }
+
+        self::assertFalse($merchant->signatureSigner()->verify($encoded, '1444904795', $forged));
+        $this->expectException(SignatureInvalidException::class);
+        Notification::fromRequest([
+            'Ds_MerchantParameters' => $encoded,
+            'Ds_Signature' => $forged,
+            'Ds_SignatureVersion' => SignatureVersion::HmacSha512V2->value,
+        ], $merchant);
+    }
+
+    /**
+     * RM1-L1 (no BC break): a custom signer with a real key (e.g. a logging decorator over the built-in Signer)
+     * keeps getting the built-in Signer from signer().
+     */
+    public function testSignerKeepsWorkingWithACustomSignerAndASecretKey(): void
+    {
+        $custom = new RecordingSigner(new Signer(self::KEY));
+        $merchant = new Merchant('999008881', '1', self::KEY, Environment::Test, SignatureVersion::HmacSha512V2, $custom);
+        $encoded = $this->params($merchant)->encode();
+
+        self::assertInstanceOf(Signer::class, $merchant->signer());
+        self::assertSame($custom->sign($encoded, '1444904795'), $merchant->signer()->sign($encoded, '1444904795'));
+        self::assertSame($custom, $merchant->signatureSigner());
+    }
+
+    public function testSignerStillWorksWithoutACustomSigner(): void
+    {
+        $merchant = $this->merchant();
+
+        self::assertInstanceOf(Signer::class, $merchant->signer());
+        self::assertSame(SignatureVersion::HmacSha512V2, $merchant->signer()->version());
     }
 
     public function testHostCanTypeAgainstRestClientInterface(): void
