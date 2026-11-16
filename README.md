@@ -83,6 +83,14 @@ make setup-hooks
 - [Spec-driven development](docs/SPEC-DRIVEN-DEVELOPMENT.md)
 - [GitHub Spec Kit](docs/SPEC-KIT.md)
 
+### Demo
+
+The Symfony 8 demo (`demo/symfony8`, UiKit shell + FormKit payment form, FrankenPHP worker mode) builds the signed redirect form:
+
+![Redirect payment form](docs/images/demo/payment-form.webp)
+
+![Payment return page](docs/images/demo/payment-return.webp)
+
 ### Additional documentation
 
 - [Sandbox: test credentials and cards](docs/SANDBOX.md)
