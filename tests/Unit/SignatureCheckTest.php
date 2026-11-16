@@ -56,7 +56,7 @@ final class SignatureCheckTest extends TestCase
     {
         $merchant = $this->merchant($version, $this->alwaysTrueSigner($version));
         // Genuine signature of a declined payment, replayed over an authorised one.
-        $signature = $merchant->signer()->sign($this->encoded('0190'), self::ORDER);
+        $signature = (new Signer(self::KEY, $version))->sign($this->encoded('0190'), self::ORDER);
 
         $this->expectException(SignatureInvalidException::class);
         Notification::fromRequest([
@@ -88,7 +88,7 @@ final class SignatureCheckTest extends TestCase
     {
         $merchant = $this->merchant($version, $this->alwaysTrueSigner($version));
         $encoded = $this->encoded('0000');
-        $signature = $merchant->signer()->sign($encoded, self::ORDER);
+        $signature = (new Signer(self::KEY, $version))->sign($encoded, self::ORDER);
 
         $notification = Notification::fromRequest([
             'Ds_MerchantParameters' => $encoded,

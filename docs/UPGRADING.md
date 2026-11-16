@@ -21,6 +21,12 @@
 
 ## Unreleased
 
+From **1.4.x**: no change needed unless you pass a custom signer to `Merchant`.
+
+- With a custom signer (HSM / KMS) you no longer need a placeholder secret key: `new Merchant($code, $terminal, customSigner: $hsmSigner)` (or pass `''`). A non-empty key is still accepted.
+- With a custom signer, `Merchant::signer()` now throws `RedsysException` (it used to return a built-in `Signer` over the configured, often placeholder, key). Replace `$merchant->signer()->sign()` / `->verify()` with `$merchant->signatureSigner()->sign()` / `->verify()`, which returns your custom signer. Better still, let `Notification::fromRequest()` and `RestResponse::fromHttp()` verify for you.
+- Without a custom signer, `Merchant::signer()` and the secret-key requirement are unchanged.
+
 ## To 1.4.0
 
 From **1.3.0**:

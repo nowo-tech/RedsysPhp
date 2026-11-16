@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- `Merchant` with a custom signer (HSM / KMS): the secret key is now optional (it defaults to `''` and is only required when no custom signer is passed), and `Merchant::signer()` throws `RedsysException` instead of returning a built-in `Signer` over the configured key. Host code that verified with `$merchant->signer()->verify()` while using a custom signer checked against a placeholder key; it now fails loudly and must use `Merchant::signatureSigner()` (audit RF3-L1). Without a custom signer nothing changes. The library's own signing and verification paths already used `signatureSigner()` and are unchanged.
+
 ### Documentation
 
 - Spec Kit baseline: the code inventory maps all 30 files under `src/` (1.3 COF/MIT enums, 1.4 ports and typed exceptions) with `FR-011`–`FR-013` in the spec (REQ-SPECKIT-001/003). README and `docs/COVERAGE.md` show the current CI line count (387/387).

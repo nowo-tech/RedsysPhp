@@ -10,6 +10,9 @@ use Nowo\Redsys\Signature\SignerInterface;
 
 /**
  * Merchant terminal credentials (FUC / terminal / signature key / environment).
+ *
+ * With a custom signer (HSM / KMS), the secret key is optional and {@see Signer()} is unavailable: the key never
+ * leaves the custom signer, so no built-in signer is ever built on a placeholder key.
  */
 final readonly class Merchant
 {
@@ -17,12 +20,15 @@ final readonly class Merchant
         private string $merchantCode,
         private string $terminal,
         #[\SensitiveParameter]
-        private string $secretKey,
+        private string $secretKey = '',
         private Environment $environment = Environment::Test,
         private SignatureVersion $signatureVersion = SignatureVersion::HmacSha512V2,
         private ?SignerInterface $customSigner = null,
     ) {
-        if (\in_array('', [$this->merchantCode, $this->terminal, $this->secretKey], true)) {
+        if ('' === $this->merchantCode || '' === $this->terminal) {
+            throw new RedsysException('Merchant code, terminal and secret key are required.');
+        }
+        if (null === $this->customSigner && '' === $this->secretKey) {
             throw new RedsysException('Merchant code, terminal and secret key are required.');
         }
         if (null !== $this->customSigner && $this->customSigner->version() !== $this->signatureVersion) {
@@ -40,6 +46,9 @@ final readonly class Merchant
         return $this->terminal;
     }
 
+    /**
+     * The configured secret key: empty when a custom signer was passed without one.
+     */
     public function secretKey(): string
     {
         return $this->secretKey;
@@ -56,11 +65,18 @@ final readonly class Merchant
     }
 
     /**
-     * The built-in {@see Signer} for this merchant's key and version. It ignores a custom signer passed to the
-     * constructor: the library signs and verifies through {@see signatureSigner()}.
+     * The built-in {@see Signer} for this merchant's key and version.
+     *
+     * @throws RedsysException when a custom signer was passed to the constructor: the secret key is then a
+     *                         placeholder (or empty), so a built-in signer over it would accept forged signatures.
+     *                         Use {@see signatureSigner()}, which works in both cases.
      */
     public function signer(): Signer
     {
+        if (null !== $this->customSigner) {
+            throw new RedsysException('Merchant::signer() is not available when a custom signer is configured; use Merchant::signatureSigner().');
+        }
+
         return new Signer($this->secretKey, $this->signatureVersion);
     }
 
@@ -70,6 +86,6 @@ final readonly class Merchant
      */
     public function signatureSigner(): SignerInterface
     {
-        return $this->customSigner ?? $this->signer();
+        return $this->customSigner ?? new Signer($this->secretKey, $this->signatureVersion);
     }
 }
