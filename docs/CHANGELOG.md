@@ -28,6 +28,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Demo
+
+- The demo is built on UiKit and FormKit (REQ-DEMO-014 / REQ-DEMO-015): the hand-written inline-style shell is replaced by UiKit's admin layout with its default theme, and `PaymentFormType` is a FormKit type on the `demo` profile with UiKit's form theme. Playwright e2e (`make test-e2e` in `demo/symfony8`) and WebP screenshots (`make demo-screenshots`) added (REQ-DEMO-013). No library change.
+
+### Documentation
+
+- README shows the refreshed demo screenshots.
+
 ## [1.4.2] - 2026-11-16
 
 ### Security

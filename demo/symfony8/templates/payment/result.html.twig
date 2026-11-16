@@ -3,9 +3,11 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <main style="max-width:40rem;margin:2rem auto;font-family:system-ui,sans-serif">
-    <h1>{{ title }}</h1>
-    <p>Browser return from Redsys ({{ tone }}). Always verify the online notification signature on <code>/notify</code> before fulfilling orders.</p>
-    <p><a href="{{ path('home') }}">Back</a></p>
-  </main>
+  <div class="nowo-ui-card" data-testid="demo-result">
+    <div class="nowo-ui-card__header"><h1>{{ title }}</h1></div>
+    <div class="nowo-ui-card__body">
+      <p>Browser return from Redsys ({{ tone }}). Always verify the online notification signature on <code class="nowo-ui-code">/notify</code> before fulfilling orders.</p>
+      <a class="nowo-ui-btn nowo-ui-btn--outline" href="{{ path('home') }}">Back</a>
+    </div>
+  </div>
 {% endblock %}
