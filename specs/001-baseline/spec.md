@@ -82,6 +82,9 @@ As an app on FrankenPHP worker mode (`reset_kernel` false / scenario B), I use s
 - **FR-008**: Library `src/` stays free of mutable/static request state; PHPStan FrankenPHP classic + worker-strict pass (see `docs/FRANKENPHP-WORKER-AUDIT.md`).
 - **FR-009**: `Psr18HttpClient` adapts any PSR-18 client + PSR-17 factories to the `HttpClient` port; transport errors become `RedsysException`.
 - **FR-010**: `RestClient` logs each REST outcome through an optional PSR-3 logger without keys, card, order data or bodies.
+- **FR-011** (1.3.0): typed credential-on-file / merchant-initiated helpers on `MerchantParameters` (`CofType`, `DirectPayment`, `ScaExemption` enums) encode exactly like the raw `with('DS_MERCHANT_…')` calls; `Redaction` keeps the card reference and COF transaction id out of debug dumps.
+- **FR-012** (1.4.0, REQ-ARCH-001 rule 1): `Rest\RestClientInterface` and `Signature\SignerInterface` are the ports implemented by `RestClient` and `Signer`; signature checks recompute with `sign()` and compare with `hash_equals` (a custom `verify()` is never trusted).
+- **FR-013**: failures are typed — `SignatureInvalidException`, `InvalidResponseException` (missing/unsupported fields, `ResponseOutcome` rules) and `TransportException` (connection, DNS, TLS, timeout) all extend `RedsysException`.
 
 ## Success Criteria
 

@@ -2,7 +2,7 @@
 
 Traceability for REQ-SPECKIT-003. All production units under `src/`.
 
-**Last audited:** 2026-10-22 (PSR-18 adapter + REST logging, FR-009 / FR-010; FrankenPHP worker scenario B, US-005 / FR-008).
+**Last audited:** 2026-11-16 (1.3 COF/MIT helpers FR-011, 1.4 ports and typed exceptions FR-012/FR-013; 2026-10-22: PSR-18 adapter + REST logging, FR-009 / FR-010; FrankenPHP worker scenario B, US-005 / FR-008).
 
 ## Core
 
@@ -18,6 +18,11 @@ Traceability for REQ-SPECKIT-003. All production units under `src/`.
 | SignatureVersion | `src/SignatureVersion.php` | FR-001 |
 | TransactionType | `src/TransactionType.php` | US-001 |
 | Currency | `src/Currency.php` | US-001 |
+| CofType | `src/CofType.php` | US-001, FR-011 |
+| DirectPayment | `src/DirectPayment.php` | US-001, FR-011 |
+| ScaExemption | `src/ScaExemption.php` | US-001, FR-011 |
+| ResponseOutcome | `src/ResponseOutcome.php` | US-002, FR-004 |
+| Redaction | `src/Redaction.php` | FR-010, FR-011 |
 
 ## Signature / encoding
 
@@ -27,6 +32,10 @@ Traceability for REQ-SPECKIT-003. All production units under `src/`.
 | SignatureCheck | `src/Signature/SignatureCheck.php` | US-002 |
 | Base64Url | `src/Encoding/Base64Url.php` | FR-002 |
 | RedsysException | `src/Exception/RedsysException.php` | US-002 |
+| SignatureInvalidException | `src/Exception/SignatureInvalidException.php` | US-002, FR-004, FR-013 |
+| InvalidResponseException | `src/Exception/InvalidResponseException.php` | US-002, FR-013 |
+| TransportException | `src/Exception/TransportException.php` | US-003, FR-006, FR-013 |
+| SignerInterface | `src/Signature/SignerInterface.php` | FR-001, FR-012 |
 
 ## HTTP / REST
 
@@ -38,5 +47,6 @@ Traceability for REQ-SPECKIT-003. All production units under `src/`.
 | Psr18HttpClient | `src/Http/Psr18HttpClient.php` | US-003, FR-009 |
 | RestClient | `src/Rest/RestClient.php` | US-003, FR-005, FR-008, FR-010 |
 | RestResponse | `src/Rest/RestResponse.php` | US-003, FR-004 |
+| RestClientInterface | `src/Rest/RestClientInterface.php` | US-003, FR-012 |
 
-**Total production PHP files**: 19
+**Total production PHP files**: 30 (30/30 files under `src/` mapped)
