@@ -133,26 +133,24 @@ final class PortsTest extends TestCase
                 new Merchant($code, $terminal, customSigner: $custom);
                 self::fail('Expected RedsysException for an empty merchant code or terminal.');
             } catch (RedsysException $e) {
-                self::assertStringContainsString('required', $e->getMessage());
+                self::assertSame('Merchant code and terminal are required.', $e->getMessage(), 'no secret key mention with a custom signer');
             }
         }
     }
 
     /**
-     * RF3-L1: with a custom signer, signer() never returns a built-in signer over the (placeholder) key, so host code
-     * that still verifies with $merchant->signer()->verify() fails loudly instead of accepting a forgery signed
-     * with the guessable placeholder.
+     * RF3-L1: a custom-signer merchant needs no placeholder key, and signer() refuses to build a built-in signer
+     * over the missing key; the library verifies through signatureSigner(), so a forgery is rejected.
      */
-    public function testSignerThrowsWithACustomSignerAndAPlaceholderKey(): void
+    public function testSignerThrowsWithACustomSignerAndNoSecretKey(): void
     {
-        $placeholder = 'unused';
-        $merchant = new Merchant('999008881', '1', $placeholder, Environment::Test, SignatureVersion::HmacSha512V2, new RejectingSigner());
+        $merchant = new Merchant('999008881', '1', customSigner: new RejectingSigner());
         $encoded = $this->params($this->merchant())->encode();
-        $forged = (new Signer($placeholder))->sign($encoded, '1444904795');
+        $forged = (new Signer('unused'))->sign($encoded, '1444904795');
 
         try {
             $merchant->signer();
-            self::fail('Merchant::signer() must not return a signer over the placeholder key.');
+            self::fail('Merchant::signer() must not build a signer without a secret key.');
         } catch (RedsysException $e) {
             self::assertStringContainsString('signatureSigner()', $e->getMessage());
         }
@@ -164,6 +162,21 @@ final class PortsTest extends TestCase
             'Ds_Signature' => $forged,
             'Ds_SignatureVersion' => SignatureVersion::HmacSha512V2->value,
         ], $merchant);
+    }
+
+    /**
+     * RM1-L1 (no BC break): a custom signer with a real key (e.g. a logging decorator over the built-in Signer)
+     * keeps getting the built-in Signer from signer().
+     */
+    public function testSignerKeepsWorkingWithACustomSignerAndASecretKey(): void
+    {
+        $custom = new RecordingSigner(new Signer(self::KEY));
+        $merchant = new Merchant('999008881', '1', self::KEY, Environment::Test, SignatureVersion::HmacSha512V2, $custom);
+        $encoded = $this->params($merchant)->encode();
+
+        self::assertInstanceOf(Signer::class, $merchant->signer());
+        self::assertSame($custom->sign($encoded, '1444904795'), $merchant->signer()->sign($encoded, '1444904795'));
+        self::assertSame($custom, $merchant->signatureSigner());
     }
 
     public function testSignerStillWorksWithoutACustomSigner(): void

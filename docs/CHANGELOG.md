@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-- `Merchant` with a custom signer (HSM / KMS): the secret key is now optional (it defaults to `''` and is only required when no custom signer is passed), and `Merchant::signer()` throws `RedsysException` instead of returning a built-in `Signer` over the configured key. Host code that verified with `$merchant->signer()->verify()` while using a custom signer checked against a placeholder key; it now fails loudly and must use `Merchant::signatureSigner()` (audit RF3-L1). Without a custom signer nothing changes. The library's own signing and verification paths already used `signatureSigner()` and are unchanged.
+- `Merchant` with a custom signer (HSM / KMS): the secret key is now optional (it defaults to `''` and is only required when no custom signer is passed), so hosts no longer need a guessable placeholder key. For a custom-signer merchant without a key, `Merchant::signer()` throws `RedsysException` instead of building a built-in `Signer` over an empty key. A custom signer with a non-empty key keeps getting the built-in `Signer` from `signer()` (no BC break). Host code should verify through `Merchant::signatureSigner()`, as the library does (audit RF3-L1). Without a custom signer nothing changes. With a custom signer, an empty merchant code or terminal is reported as "Merchant code and terminal are required.".
 
 ### Documentation
 

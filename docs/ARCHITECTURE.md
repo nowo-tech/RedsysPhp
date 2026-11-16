@@ -37,8 +37,8 @@ Every replaceable piece is an interface with a default implementation. Type your
 (`SignedPayload::from()`, `Notification::fromRequest()`, `RestResponse::fromHttp()`): the custom signer when one was
 passed, otherwise the built-in `Signer`. Without a custom signer, `Merchant::signer()` returns the built-in `Signer`
 (unchanged since 1.0). With a custom signer the secret key is optional (`new Merchant($code, $terminal,
-customSigner: $hsmSigner)`) and `Merchant::signer()` throws `RedsysException`, so no built-in signer is ever built on a
-placeholder key; use `signatureSigner()`. The merchant's configured `SignatureVersion` stays the only accepted algorithm: a received
+customSigner: $hsmSigner)`); without a key, `Merchant::signer()` throws `RedsysException` instead of building a
+built-in signer on an empty key. Verify through `signatureSigner()`. The merchant's configured `SignatureVersion` stays the only accepted algorithm: a received
 `Ds_SignatureVersion` that differs is rejected before the signer is asked (no downgrade).
 
 The library only calls `sign()` on that signer. To check a received signature it recomputes it with `sign()` and

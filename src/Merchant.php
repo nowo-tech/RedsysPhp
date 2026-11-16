@@ -25,10 +25,11 @@ final readonly class Merchant
         private SignatureVersion $signatureVersion = SignatureVersion::HmacSha512V2,
         private ?SignerInterface $customSigner = null,
     ) {
-        if ('' === $this->merchantCode || '' === $this->terminal) {
-            throw new RedsysException('Merchant code, terminal and secret key are required.');
-        }
-        if (null === $this->customSigner && '' === $this->secretKey) {
+        if (null !== $this->customSigner) {
+            if ('' === $this->merchantCode || '' === $this->terminal) {
+                throw new RedsysException('Merchant code and terminal are required.');
+            }
+        } elseif (\in_array('', [$this->merchantCode, $this->terminal, $this->secretKey], true)) {
             throw new RedsysException('Merchant code, terminal and secret key are required.');
         }
         if (null !== $this->customSigner && $this->customSigner->version() !== $this->signatureVersion) {
@@ -65,16 +66,16 @@ final readonly class Merchant
     }
 
     /**
-     * The built-in {@see Signer} for this merchant's key and version.
+     * The built-in {@see Signer} for this merchant's key and version. It ignores a custom signer passed to the
+     * constructor: with one, verify through {@see signatureSigner()} (the library always does).
      *
-     * @throws RedsysException when a custom signer was passed to the constructor: the secret key is then a
-     *                         placeholder (or empty), so a built-in signer over it would accept forged signatures.
-     *                         Use {@see signatureSigner()}, which works in both cases.
+     * @throws RedsysException when a custom signer was passed without a secret key: there is no key to build a
+     *                         built-in signer on
      */
     public function signer(): Signer
     {
-        if (null !== $this->customSigner) {
-            throw new RedsysException('Merchant::signer() is not available when a custom signer is configured; use Merchant::signatureSigner().');
+        if (null !== $this->customSigner && '' === $this->secretKey) {
+            throw new RedsysException('Merchant::signer() needs a secret key; this merchant only has a custom signer: use Merchant::signatureSigner().');
         }
 
         return new Signer($this->secretKey, $this->signatureVersion);
