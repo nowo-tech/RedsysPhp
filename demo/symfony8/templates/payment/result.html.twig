@@ -2,12 +2,21 @@
 
 {% block title %}{{ title }}{% endblock %}
 
+{% block nowo_ui_page_header %}
+    {{ include(nowo_ui_partial('page_header'), {
+        title: title,
+        intro: 'Browser return from Redsys (' ~ tone ~ ').',
+    }) }}
+{% endblock %}
+
 {% block body %}
-  <div class="nowo-ui-card" data-testid="demo-result">
-    <div class="nowo-ui-card__header"><h1>{{ title }}</h1></div>
-    <div class="nowo-ui-card__body">
-      <p>Browser return from Redsys ({{ tone }}). Always verify the online notification signature on <code class="nowo-ui-code">/notify</code> before fulfilling orders.</p>
-      <a class="nowo-ui-btn nowo-ui-btn--outline" href="{{ path('home') }}">Back</a>
-    </div>
-  </div>
+    {% set _return_title = title %}
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'Browser return', kind: 'detail', testid: 'demo-result'} %}
+        {% block section_body %}
+            <p>{{ _return_title }}. Always verify the online notification signature on <code class="nowo-ui-code">/notify</code> before fulfilling orders.</p>
+        {% endblock %}
+        {% block section_footer %}
+            <a class="nowo-ui-btn nowo-ui-btn--outline" href="{{ path('home') }}">Back</a>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}
