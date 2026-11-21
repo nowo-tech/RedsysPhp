@@ -266,7 +266,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/redsys-php",
-                "reference": "68918088b006bc0357352e0a2cf83c26871e219f"
+                "reference": "ad0982186f0d16117dd4e378f4015333e1821f12"
             },
             "require": {
                 "ext-curl": "*",
