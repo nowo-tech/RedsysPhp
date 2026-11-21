@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test';
 
 /** REQ-DEMO-013 — happy path of the Redsys redirect demo (UiKit shell + FormKit payment form). */
 test.describe('RedsysPhp demo', () => {
-  test('home renders the UiKit shell and the FormKit payment form', async ({ page }) => {
+  test('home renders the demo platform shell and the FormKit payment form', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByTestId('demo-masthead')).toContainText('RedsysPhp demo');
+    await expect(page.getByTestId('demo-platform')).toContainText('Redsys PHP');
     await expect(page.getByLabel('Amount (cents)')).toHaveValue('145');
     await expect(page.getByTestId('demo-pay')).toBeVisible();
   });

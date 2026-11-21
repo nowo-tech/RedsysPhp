@@ -1,20 +1,14 @@
-{#- REQ-DEMO-014: the demo shell is UiKit's admin layout with UiKit's default theme (nowo-ui.css from the bundle's own
-    asset package, no CSS framework, no CDN, no token override). -#}
-{% extends '@NowoUiKit/layout/admin.html.twig' %}
-
+{#- REQ-DEMO-014: the demo runs inside UiKit's shared demo platform shell. This file only declares the demo. -#}
+{% extends '@NowoUiKit/demo_platform/layout.html.twig' %}
+{% set nowo_ui_demo_platform = {
+    bundle: 'Redsys PHP',
+    home_route: 'home',
+    repository: 'https://github.com/nowo-tech/RedsysPhp',
+    translation_domain: false,
+    nav: [
+        {label: 'Redirect payment', route: 'home', section: 'Redsys PHP'},
+        {label: 'Return OK', route: 'ok', section: 'Browser return pages'},
+        {label: 'Return KO', route: 'ko', section: 'Browser return pages'},
+    ],
+} %}
 {% block nowo_ui_document_title %}{% block title %}Redsys PHP SDK Demo{% endblock %}{% endblock %}
-
-{% block nowo_ui_navigation %}
-    {% set _route = app.request.attributes.get('_route') %}
-    <header class="nowo-ui-header" data-testid="demo-masthead">
-        <a class="nowo-ui-brand" href="{{ path('home') }}">RedsysPhp demo</a>
-        <nav class="nowo-ui-menu" aria-label="RedsysPhp demo">
-            <a class="nowo-ui-link" href="{{ path('home') }}"{% if _route == 'home' %} aria-current="page"{% endif %}>Redirect payment</a>
-        </nav>
-        <div class="nowo-ui-header__end">
-            {{ include('@NowoUiKitBundle/partials/_theme_toggle.html.twig', { compact: true }, false) }}
-        </div>
-    </header>
-{% endblock %}
-
-{% block nowo_ui_content %}{% block body %}{% endblock %}{% endblock %}

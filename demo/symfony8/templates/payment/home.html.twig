@@ -2,16 +2,25 @@
 
 {% block title %}RedsysPhp demo{% endblock %}
 
+{% block nowo_ui_page_header %}
+    {{ include(nowo_ui_partial('page_header'), {
+        title: 'RedsysPhp — redirect demo',
+        intro: 'Builds a signed auto-submit form to the Redsys SIS (test by default). FrankenPHP worker-safe: HTML is returned as a Response string.',
+    }) }}
+{% endblock %}
+
 {% block body %}
-  <div class="nowo-ui-card">
-    <div class="nowo-ui-card__header"><h1>RedsysPhp — redirect demo</h1></div>
-    <div class="nowo-ui-card__body">
-      <p>Builds a signed auto-submit form to the Redsys SIS (test by default). FrankenPHP worker-safe: HTML is returned as a Response string.</p>
-      {{ form_start(form) }}
-        {% for child in form %}
-          {% if not child.rendered %}{{ form_row(child) }}{% endif %}
-        {% endfor %}
-      {{ form_end(form) }}
-    </div>
-  </div>
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'Redirect payment', intro: 'Pay with the Redsys sandbox terminal.', kind: 'form', testid: 'demo-payment'} %}
+        {% block section_body %}
+            {{ form_start(form, { attr: { id: 'demo-form', novalidate: 'novalidate' } }) }}
+                {% for child in form %}
+                    {% if not child.rendered and child.vars.name != 'pay' %}{{ form_row(child) }}{% endif %}
+                {% endfor %}
+                {% do form.pay.setRendered %}
+            {{ form_end(form) }}
+        {% endblock %}
+        {% block section_footer %}
+            <button type="submit" form="demo-form" class="nowo-ui-btn nowo-ui-btn--primary" data-testid="demo-pay">{{ form.pay.vars.label }}</button>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}
