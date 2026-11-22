@@ -28,6 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Rector (`make rector-dry` failed on 2 files): `Merchant` tests its `?SignerInterface $customSigner` with `instanceof` instead of `null !==` (same result, the property only holds `null` or a `SignerInterface`), and two test constants are typed. No behaviour change.
+
 ### Changed
 
 - Demo: runs in UiKit's demo platform shell (`nowo-tech/ui-kit-bundle` ^2.60); the demo's own header is gone and the pages use the shell page headers and section cards. Demo only, no bundle change.

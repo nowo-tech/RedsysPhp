@@ -25,14 +25,14 @@ final readonly class Merchant
         private SignatureVersion $signatureVersion = SignatureVersion::HmacSha512V2,
         private ?SignerInterface $customSigner = null,
     ) {
-        if (null !== $this->customSigner) {
+        if ($this->customSigner instanceof SignerInterface) {
             if ('' === $this->merchantCode || '' === $this->terminal) {
                 throw new RedsysException('Merchant code and terminal are required.');
             }
         } elseif (\in_array('', [$this->merchantCode, $this->terminal, $this->secretKey], true)) {
             throw new RedsysException('Merchant code, terminal and secret key are required.');
         }
-        if (null !== $this->customSigner && $this->customSigner->version() !== $this->signatureVersion) {
+        if ($this->customSigner instanceof SignerInterface && $this->customSigner->version() !== $this->signatureVersion) {
             throw new RedsysException('The custom signer must use the merchant signature version.');
         }
     }
@@ -74,7 +74,7 @@ final readonly class Merchant
      */
     public function signer(): Signer
     {
-        if (null !== $this->customSigner && '' === $this->secretKey) {
+        if ($this->customSigner instanceof SignerInterface && '' === $this->secretKey) {
             throw new RedsysException('Merchant::signer() needs a secret key; this merchant only has a custom signer: use Merchant::signatureSigner().');
         }
 
