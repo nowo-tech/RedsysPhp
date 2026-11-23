@@ -28,9 +28,9 @@ use PHPUnit\Framework\TestCase;
  */
 final class WorkerKeptAliveTest extends TestCase
 {
-    private const ITERATIONS = 1000;
+    private const int ITERATIONS = 1000;
 
-    private const WARM_UP = 50;
+    private const int WARM_UP = 50;
 
     private const MEMORY_MARGIN_BYTES = 4 * 1024 * 1024;
 
