@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 $finder = PhpCsFixer\Finder::create()
+    ->notPath('#^demo/[^/]+/config/(bundles|reference)\.php$#')
     ->in(__DIR__ . '/src')
     ->in(__DIR__ . '/tests')
     ->name('*.php')
@@ -11,7 +12,8 @@ $finder = PhpCsFixer\Finder::create()
 return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules([
-        '@PSR12' => true,
+        '@PER-CS' => true,
+        '@PER-CS:risky' => true,
         '@Symfony' => true,
         '@Symfony:risky' => true,
         '@PHP83Migration' => true,
