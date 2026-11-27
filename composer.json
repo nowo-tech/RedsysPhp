@@ -33,7 +33,7 @@
         "docs": "https://github.com/nowo-tech/RedsysPhp/blob/main/docs/USAGE.md"
     },
     "require": {
-        "php": ">=8.3 <8.6",
+        "php": ">=8.3 <8.7",
         "ext-curl": "*",
         "ext-json": "*",
         "ext-openssl": "*",
